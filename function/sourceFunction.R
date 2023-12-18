@@ -1,0 +1,605 @@
+library(ggplot2)
+library(tidyr)
+library(ggrepel)
+library(propagate)
+library(investr)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+# Simple.pick -------------------------------------------------------------
+profilePretreat2 <- function(
+  file,
+  smooth_method = "MovingAverage",
+  halfWindowSize = 1,
+  polynomialOrder = 4,
+  pickPeaks_method = "kNeighbors",
+  kNeighbors_par = 25,
+  signalPercentage = 50,
+  output_file){
+  
+  message("Reaing...")
+  data_prof_inmemory <- readMSData(file, mode = "onDisk", centroided = FALSE , smoothed. = FALSE , msLevel. = c(1,2))
+  message("Done!")
+  #读取mzml文件，模式为onDisk，onDisk模式默认只提取一级峰
+  
+  if (smooth_method == "MovingAverage") {
+    message("Smoothing...")
+    data_prof_smooth <- smooth(data_prof_inmemory, method = smooth_method, halfWindowSize = halfWindowSize)
+    #对质谱数据进行平滑，过滤噪声
+    message("Done!")
+  }
+  if (smooth_method == "SavitzkyGolay") {
+    message("Smoothing...")
+    data_prof_smooth <- smooth(data_prof_inmemory, method = smooth_method, polynomialOrder = polynomialOrder)
+    #对质谱数据进行平滑，过滤噪声
+    message("Done!")
+  }
+  
+  if (pickPeaks_method == "kNeighbors") {
+    message("pickPeaking...")
+    data_prof_pick <- pickPeaks(data_prof_smooth , refinMz = pickPeaks_method, k = kNeighbors_par)
+    #对质谱数据进行峰拾取，使profile变为centroid
+    #pickpeaks会减少原本数据的大量内存，因为减少了很大的数据量
+    message("Done!")
+  }
+  if (pickPeaks_method == "descendPeak") {
+    message("pickPeaking...")
+    data_prof_pick <- pickPeaks(data_prof_smooth , refinMz = pickPeaks_method, signalPercentage = signalPercentage)
+    #对质谱数据进行峰拾取，使profile变为centroid
+    message("Done!")
+  }
+  
+  paste0("Writing data to ",output_file," ...") %>% message()
+  writeMSData(object = data_prof_pick , file = output_file , outformat = "mzml", merge = FALSE , copy = FALSE , software_processing = NULL)
+  #将centroid的文件输出为mzml文件
+  message("Done!")
+  
+}
+Simple.pick2 <- function(filename){
+  profilePretreat2(file=filename,output_file=paste(gsub('.mzML','',filename),'_Center.mzML',sep=''))
+  pick_result <- xcmsSet(paste(gsub('.mzML','',filename),'_Center.mzML',sep=''),
+                         method='centWave',ppm=20,peakwidth=c(1,100),prefilter=c(1,5000),
+                         snthresh=3,noise=0,mzCenterFun="wMean",integrate=1L,fitgauss=FALSE,mslevel=1)
+  # pick_result <- xcmsSet(paste(gsub('.mzML','',filename),'_Center.mzML',sep=''))
+  peak <- pick_result@peaks %>%
+    as.data.frame()
+  result <- cbind(peak$mz , peak$into , peak$rt) %>%
+    `colnames<-`(c("mz","intensity","rt"))
+  # write.csv(x = result , row.names = FALSE,
+  #           file=paste(gsub('.mzML','',filename),'_treated.csv',sep=''))
+  return(result)
+}
+
+# Peak.pick ---------------------------------------------------------------
+Peak.pick <- function(da) {
+  a <- MSnbase::readMSData(da,mode='inMemory')
+}
+
+# Peak.pick.pretreat ------------------------------------------------------
+Peak.pick.pretreat <- function(da, mode) {
+  # da <- neg.data;mode <- 'N'
+  da.name <- names(da@assayData)
+  count <- list()
+  for (i in 1:length(da.name)) {
+    # for(i in 1:2){
+    da.temp <- da@assayData[[da.name[i]]]
+    count.1 <- list(
+      num = gsub('F1.S', '', da.name[i]),
+      PrecursorMZ = as.numeric(da.temp@precursorMz),
+      PrecursorIntensity = da.temp@precursorIntensity,
+      mode = mode,
+      rt = da.temp@rt / 60,
+      MS2mz = data.frame(da.temp@mz, da.temp@intensity)
+    )
+    count[[i]] <- count.1
+  }
+  names(count) <- da.name
+  return(count)
+}
+
+# peak.treat --------------------------------------------------------------
+peak.treat <- function(filename, mode) {
+  s = Sys.time()
+  neg.table <- Simple.pick(filename)
+  message('Start reading peaks.')
+  file2 <-
+    paste(gsub('.mzML', '', filename), 
+          '_Center.mzML', sep = '')
+  neg.data <- Peak.pick(file2)
+  neg.list <- Peak.pick.pretreat(neg.data, mode)
+  rm(neg.data, neg.table)
+  file3 <-
+    paste(gsub('.mzML', '', filename), 
+          'treated.rda', sep = '')
+  save(neg.list, file = file3)
+  e = Sys.time()
+  print(e - s)
+  return(neg.list)
+}
+
+# MS-DIAL预处理方程 ------------------------------------------------------------
+MSDIAL.pretreat <- function(da) {
+  # 去除unknown\RIKEN ---------------------------------------------------------------
+  # da <- pos
+  
+  # 处理名字 --------------------------------------------------------------------
+  d2 <- da$`Metabolite name`
+  d2 <- gsub(' O-', '-O ', d2)
+  d2 <- gsub(' P-', '-P ', d2)
+  d2 <- gsub('-SN1', '', d2)
+  d2 <- gsub('\\(methyl\\)', '', d2)
+  d2 <- gsub('\\/N-', '_', d2)
+  # 根据|划分
+  da$total <- gsub('\\|.*', '', d2)
+  d2 <- gsub('.*\\|', '', d2)
+  d3 <- d2[str_detect(d2, '\\(FA')]# 处理有（FA 12:6）这种的
+  # 将（FA和其他分开，统一放最后
+  d4 <- gsub('.*\\(FA ', '', d3)
+  d4 <- gsub('\\).*', '', d4)
+  # 删除（FA xx）
+  d3 <- gsub('\\(FA .*\\)', '', d3)
+  # 在原本的名字后面加上-FA
+  d3 <- gsub(' ', '-FA ', d3)
+  d2[str_detect(d2, '\\(FA')] <- d3
+  d2 <- gsub('AHexCer \\(O-', 'AHexCer-O ', d2)
+  da$meta_name <- d2
+  da$subclass <- gsub(' .*', '', d2)
+  da$other <- gsub(' ', '', gsub('.* ', '', d2))
+  da$other <- gsub('OH)', 'OH', da$other)
+  da$other <- gsub('\\)', '_', da$other)
+  da$other <- gsub('OH', 'OH)', da$other)
+  da$other <- gsub('/', '_', da$other)
+  # da$other <- paste("'",da$other,sep='')
+  da <-
+    da[, c(
+      'Alignment ID',
+      'Average Rt(min)',
+      'Average Mz',
+      'Metabolite name',
+      'Adduct type',
+      'meta_name',
+      'total',
+      'subclass',
+      'other'
+    )]
+  colnames(da) <-
+    c('Peak ID',
+      'rt',
+      'mz',
+      'Title',
+      'Adduct',
+      'meta_name',
+      'total',
+      'subclass',
+      'Chain')
+  # da <- data.frame(da,'Total.C'=0,'Total Uns'=0)
+  return(da)
+}
+MSDIAL.pretreat2 <- function(da) {
+  # da <- d2
+  da <- data.frame(da, Total.C = 0, 'Total Usa' = 0)
+  da.total.chain <- da$Chain
+  # 将每条链分开
+  count <- matrix(0, 
+                  nrow = length(da.total.chain), 
+                  ncol = 16)
+  colnames(count) <- c(
+    'FA1',
+    'C1',
+    'U1',
+    'other1',
+    'FA2',
+    'C2',
+    'U2',
+    'other2',
+    'FA3',
+    'C3',
+    'U3',
+    'other3',
+    'FA4',
+    'C4',
+    'U4',
+    'other4'
+  )
+  for (i in 1:length(da.total.chain)) {
+    sp.chain <- unlist(strsplit(da.total.chain[i], '_'))
+    for (j in 1:length(sp.chain)) {
+      count[i, j * 4 - 3] <- sp.chain[j]
+    }
+  }
+  count[, 5] <- gsub('\\(', ';\\(', count[, 5])# 针对第二列有部分（OH）前面没有；问题
+  # 接下来按照每四列看一下X:Y;ZO
+  for (ii in 1:4) {
+    for (jj in 1:nrow(count)) {
+      ddd <- count[jj, 4 * ii - 3]
+      count[jj, 4 * ii - 2] <- unlist(strsplit(ddd, ':'))[1]
+      count[jj, 4 * ii - 1] <-
+        unlist(strsplit(unlist(strsplit(ddd, ':'))[2], ';'))[1]
+      count[jj, 4 * ii] <-
+        unlist(strsplit(unlist(strsplit(ddd, ':'))[2], ';'))[2]
+    }
+  }
+  count <- as.data.frame(count)
+  count[, c(2, 3, 6, 7, 10, 11, 14, 15)] <-
+    apply(count[, c(2, 3, 6, 7, 10, 11, 14, 15)], 2, as.numeric)
+  count[is.na(count)] <- 0
+  final.count <-
+    data.frame(
+      'Total.C' = apply(count[, c(2, 6, 10, 14)], 1, sum),
+      'Total Uns' = apply(count[, c(3, 7, 11, 15)], 1, sum),
+      'other' = paste(count[, 4], count[, 8], count[, 12], count[, 16], sep =
+                        '')
+    )# 分别求和
+  final.count$other <- gsub('0', '', 
+                            final.count$other)
+  m <- data.frame(
+    'subclass' = da$subclass,
+    'Total.C' = final.count$Total.C,
+    'Total Uns' = paste(final.count$Total.Uns, 
+                        final.count$other, sep =
+                          ';'),
+    'Title' = da$Title,
+    'mz' = da$mz,
+    'rt' = da$rt,
+    'Adduct' = da$Adduct,
+    'Chain' = da$Chain
+  )
+  return(m)
+}
+
+# 去除总链长总不饱和度一样，rawmz一样，rt很接近的 ---------------------------------------------
+da.delect <- function(da) {
+  # 依据得分作为剔除概率的剔除
+  # da <- d
+  # 计算rawmz和rt误差在指定范围内的点
+  da$temp.cluster <- paste(rawmzcluster(da$X, 
+                                        da$rawmz, 10 ^ (-5)),
+                           rtcluster(da$X, 
+                                     da$rt, 5 / 60),
+                           sep = 'ab')
+  da$scale.score <- 0
+  k <- unique(da$temp.cluster)
+  da <- do.call(rbind, lapply(1:length(k), function(i) {
+    dd <- da[which(da$temp.cluster == k[i]),]
+    if (length(unique(dd$score.match)) == 1) {
+      dd$scale.score <- 1
+    }
+    if (length(unique(dd$score.match)) != 1) {
+      dd$scale.score <-
+        (dd$score.match - min(dd$score.match)) / (max(dd$score.match) - min(dd$score.match))
+    }
+    dn <- sample(1:nrow(dd), size = 1, prob = dd$scale.score)
+    dd <- dd[as.numeric(dn),]
+    return(dd)
+  }))
+  da <- da[,-(ncol(da) - 1)]
+  return(da)
+}
+
+#ABC function 1.0
+####单调增判定####
+Monotonicity.judgment <- function(x, y) {
+  da <- data.frame(x = x, y = y)
+  da <- da[order(da$x),]
+  error <- -5 * 10 ^ (-6) * mean(da$y)# 采用了5个ppm
+  if (!is.unsorted(da$y) && all(diff(da$y) >= error)) {
+    I1 <- 1
+  }
+  else{
+    I1 <- 0
+  }
+  return(I1)
+}
+####区间平滑判定（即判断能否被拟合为三次函数）####
+Smooth.judgment <- function(x, y) {
+  test <-
+    try(lm(y ~ poly(x, 2), data.frame(x = x, y = y)), silent = TRUE)
+  if (('try-error' %in% class(test)) == FALSE) {
+    I2 <- 1
+  }
+  else{
+    I2 <- 0
+  }
+  return(I2)
+}
+####残差平方和SSE####
+SSE <- function(x, y) {
+  fit <- lm(y ~ poly(x, 2), data.frame(x = x, y = y))
+  a <- sqrt(sum(resid(fit) ^ 2))
+  b <- mean(y) * length(x)
+  return(1 + a / b)
+}
+####2.3.1.4将上述三步合起来####
+target.function <- function(x, y) {
+  I1 <- Monotonicity.judgment(x, y)
+  I2 <- Smooth.judgment(x, y)
+  if (I2 == 1) {
+    I3 <- SSE(x, y)
+  }
+  else{
+    I3 <- 0
+  }
+  return(I1 * I2 * I3)
+}
+####确定起始点####
+# 最优起始点
+begin.point <- function(d, rep.time) {
+  # rep.time <- 100
+  # ratio <- 0.4
+  # d <- d
+  d.mz <- unique(rawmzcluster(d$X, d$rawmz, 10 ^ (-5)))
+  if (length(d.mz) < 4) {
+    # 点数少于4，报错
+    warning("There are too few points to search and fit.")
+  }
+  if (length(d.mz) >= 4) {
+    # 点数足够开始
+    n <- max(4, ceiling(0.5 * length(d.mz)))# 抽取数量
+    da.temp <- d
+    da.temp$label <- rawmzcluster(d$X, d$rawmz, 10 ^ (-5))
+    res <- lapply(1:rep.time, function(i) {
+      # 用于重复rep.time次
+      # 先对mz一样的随机保留一个
+      da.temp1 <-
+        do.call(rbind, lapply(1:length(d.mz), function(j) {
+          dddd <- da.temp[which(da.temp$label == d.mz[j]),]# 提取出mz一样的
+          ddddd <-
+            sample(1:nrow(dddd),
+                   size = 1,
+                   prob = dddd$score.match)# 依据概率抽取一个
+          return(dddd[ddddd,])
+        }))
+      da.temp1 <-
+        da.temp1[sample(
+          1:nrow(da.temp1),
+          size = n,
+          prob = da.temp1$score.match,
+          replace = F
+        ),]
+      # 计算损失函数值
+      a <- list()
+      a[[1]] <- da.temp1$X
+      a[[2]] <- target.function(da.temp1$rt, da.temp1$rawmz)
+      names(a) <- c('num', 'score')
+      return(a)
+    })
+    res.score <- do.call(c, lapply(1:length(res), function(i) {
+      res[[i]][["score"]]
+    }))
+    if (max(res.score) == 0) {
+      warning("More than 25% error points, unable to search and fit.")
+    }
+    else{
+      res.score[which(res.score == 0)] <- 9999
+      return(res[[which.min(res.score)]])
+    }
+  }
+}
+
+# 搜索函数不画图 -----------------------------------------------------------------
+all_search <- function(bp.point, other.point,target.function.tolerance) {
+    # target.function.tolerance <- 2
+    x.best <- bp.point$rt
+    y.best <- bp.point$rawmz
+    other.point <- rbind(cbind(other.point, label = 0),
+                         cbind(bp.point, label = 'best.begin'))
+    x <- other.point$rt
+    y <- other.point$rawmz
+    label <- rep('check', time = nrow(other.point))
+    fit <- lm(y ~ poly(x, 2), data.frame(x = x.best, y = y.best))
+    x.in.num <-
+      which(other.point$rt <= max(x.best) &
+              other.point$rt >= min(x.best))# 在起始点的范围内的点进行判断
+    prep <- data.frame(
+      x.num = x.in.num,
+      x = other.point[x.in.num,]$rt,
+      y = other.point[x.in.num,]$rawmz,
+      predict(
+        fit,
+        newdata = data.frame(x = other.point[x.in.num,]$rt),
+        interval = "prediction"
+      )
+    )
+    if (length(which(prep$lwr == 'NaN')) > 0) {
+      prep[which(prep$lwr == 'NaN'),]$lwr <- prep$fit - 0.1
+    }
+    if (length(which(prep$upr == 'NaN')) > 0) {
+      prep[which(prep$upr == 'NaN'),]$upr <- prep$fit + 0.1
+    }
+    label[prep[which(prep$y <= prep$upr &
+                       prep$y >= prep$lwr), 1]] <-
+      'best.begin' # 置信区间内点命名
+    mm <-
+      data.frame(x = other.point$rt,
+                 y = other.point$rawmz,
+                 label = other.point$label)
+    ####3.1.2全局搜索往下####
+    # 从起始点的最小值开始
+    for (xx in 1:nrow(other.point)) {
+      x.best <- mm[which(label == 'best.begin'), 'x']
+      y.best <- mm[which(label == 'best.begin'), 'y']
+      x.min.data <- x.best[which(x.best == sort(x.best)[2])]
+      y.min.data <- y.best[which(x.best == sort(x.best)[2])]
+      # 计算最低点的切线的正弦值
+      min.best.k <- sin(atan(
+        2 * as.numeric(coef(fit))[2] * x.min.data +
+          as.numeric(coef(fit))[3] * x.min.data
+      ))
+      # 寻找到符合的象限区间的点
+      data.less <-
+        data.frame(num = intersect(which(x < min(x.best)), which(y < min(y.best))),
+                   x = x[intersect(which(x < min(x.best)), which(y <
+                                                                   min(y.best)))],
+                   y = y[intersect(which(x < min(x.best)), which(y <
+                                                                   min(y.best)))])
+      # 对于区间内的点求sin值
+      if (nrow(data.less) > 0) {
+        data.less <- do.call(rbind, lapply(1:nrow(data.less), function(i) {
+          d = (x.min.data - data.less[i,]$x) / sqrt((x.min.data - data.less[i,]$x) ^
+                                                      2 + (y.min.data - data.less[i,]$y) ^ 2)
+          data.frame(data.less[i,], sin = d)
+        }))
+        # 进一缩小可行域在切线以下
+        data.less <- data.less[which(data.less$sin < min.best.k),]
+        # 贪婪计算可行域内每个点加入后对目标函数的改变
+        if (nrow(data.less) > 0) {
+          data.less <- do.call(rbind, lapply(1:nrow(data.less), function(i) {
+            data.frame(data.less[i,], tf = target.function(c(x.best, data.less[i,]$x), c(y.best, data.less[i,]$y)))
+          }))
+          # 选择目标函数值最小并且满足设置的阈值
+          if (data.less[which.min(data.less$tf),]$tf < target.function.tolerance) {
+            label[data.less[which.min(data.less$tf),]$num] <- 'best.begin'
+            # print(data.less[which.min(data.less$tf),]$num)
+            mm <- data.frame(x = x,
+                             y = y,
+                             label = label)
+          }
+        }
+      }
+      if (nrow(data.less) == 0) {
+        break
+      }
+    }
+    ####3.1.3全局搜索往上###
+    for (xx in 1:nrow(other.point)) {
+      x.best <- mm[which(label == 'best.begin'), 'x']
+      y.best <- mm[which(label == 'best.begin'), 'y']
+      x.min.data <-
+        x.best[which(x.best == sort(x.best, decreasing = TRUE)[2])]
+      y.min.data <-
+        y.best[which(x.best == sort(x.best, decreasing = TRUE)[2])]
+      # 计算最低点的切线的正弦值
+      min.best.k <- sin(atan(
+        2 * as.numeric(coef(fit))[2] * x.min.data ^ 2 +
+          as.numeric(coef(fit))[3] * x.min.data
+      ))
+      # 寻找到符合的象限区间的点
+      data.less <-
+        data.frame(num = intersect(which(x > max(x.best)), which(y > max(y.best))),
+                   x = x[intersect(which(x > max(x.best)), which(y >
+                                                                   max(y.best)))],
+                   y = y[intersect(which(x > max(x.best)), which(y >
+                                                                   max(y.best)))])
+      if (nrow(data.less) > 0) {
+        data.less <- do.call(rbind, lapply(1:nrow(data.less), function(i) {
+          d = (data.less[i,]$x - x.min.data) / sqrt((x.min.data - data.less[i,]$x) ^
+                                                      2 + (y.min.data - data.less[i,]$y) ^ 2)
+          data.frame(data.less[i,], sin = d)
+        }))
+        # 进一缩小可行域在切线以下
+        data.less <- data.less[which(data.less$sin < min.best.k),]
+        # 贪婪计算可行域内每个点加入后对目标函数的改变
+        if (nrow(data.less) > 0) {
+          data.less <- do.call(rbind, lapply(1:nrow(data.less), function(i) {
+            data.frame(data.less[i,], tf = target.function(c(x.best, data.less[i,]$x), c(y.best, data.less[i,]$y)))
+          }))
+          # 选择目标函数值最小并且满足设置的阈值
+          if (data.less[which.min(data.less$tf),]$tf < target.function.tolerance) {
+            label[data.less[which.min(data.less$tf),]$num] <- 'best.begin'
+            # print(data.less[which.min(data.less$tf),]$num)
+            mm <- data.frame(x = x,
+                             y = y,
+                             label = label)
+          }
+        }
+      }
+      if (nrow(data.less) == 0) {
+        break
+      }
+    }
+    # 将拟合曲线上的点包进来（只包括这些最优解起始点包含的范围）
+    mm1 <- mm[which(mm$label %in% c('best.begin')),]
+    fit <- lm(y ~ poly(x, 2), data.frame(x = mm1$x, y = mm1$y))
+    prep <- data.frame(
+      x = other.point$rt,
+      y = other.point$rawmz,
+      label = 0,
+      predict(
+        fit,
+        newdata = data.frame(x = other.point$rt),
+        interval = "prediction"
+      )
+    )
+    if (length(which(prep$lwr == 'NaN')) > 0) {
+      prep[which(prep$lwr == 'NaN'),]$lwr <- prep$fit - 0.1
+    }
+    if (length(which(prep$upr == 'NaN')) > 0) {
+      prep[which(prep$upr == 'NaN'),]$upr <- prep$fit + 0.1
+    }
+    # label <- abs(prep$y-prep$fit)/prep$y*summary(fit)[["adj.r.squared"]]
+    label <- abs(prep$y - prep$fit) / prep$y
+    mm <- data.frame(rt = prep$x,
+                     rawmz = prep$y,
+                     label = label)
+    mm <-
+      merge(other.point[,-ncol(other.point)], mm, by = c('rt', 'rawmz'))
+    return(mm)
+  }
+
+# 一个简单的统计10次重复最终结果 --------------------------------------------------------
+statistic.fun <- function(data) {
+  # data <- da.temp[1,]
+  k <- NA
+  if (length(grep('check', data)) >= 1) {
+    k <- 'check'
+  }
+  if (length(grep('eligibled', data)) >= 1) {
+    k <- 'eligibled'
+  }
+  if (length(grep('best.begin', data)) >= 1) {
+    k <- 'best.begin'
+  }
+  return(k)
+}
+
+# 一个简单计算的分的 ---------------------------------------------------------------
+final.score <- function(data) {
+  # data <- da2[1,]
+  k <- ncol(data)
+  kk <- k - 9
+  data <- as.character(data[kk:k])
+  data <- data[-which(data == 'NA')]
+  if (length(data) > 0) {
+    return(mean(as.numeric(data)))
+  }
+  if (length(data) == 0) {
+    return(NA)
+  }
+}
+
+# 编号唯一化 -------------------------------------------------------------------
+process_numbers <- function(numbers) {
+  processed_numbers <- vector()
+  count_dict <- list()
+  
+  for (num in numbers) {
+    if (num %in% names(count_dict)) {
+      count <- count_dict[[as.character(num)]]
+      count_dict[[as.character(num)]] <- count + 1
+      processed_numbers <-
+        append(processed_numbers, paste(num, paste0("-", count + 1), sep = ""))
+    } else {
+      count_dict[[as.character(num)]] <- 0
+      processed_numbers <-
+        append(processed_numbers, paste(num, "-0", sep = ""))
+    }
+  }
+  
+  return(processed_numbers)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
