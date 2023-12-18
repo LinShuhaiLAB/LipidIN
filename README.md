@@ -44,11 +44,3 @@ By following these simple steps, users can quickly generate lipid identification
 
 
 
-
-
-
-
-
-
-
-### End
