@@ -1,8 +1,6 @@
 # LipidIN (Lipidomics Integration)
 
 
-**Table of Contents**
-
 
 Introduction
 =============
