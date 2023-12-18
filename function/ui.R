@@ -1,6 +1,6 @@
 ui <- bs4Dash::dashboardPage(
   ####1.big title####
-  title = "Lipid Annotation (beta)",
+  title = "Lipidomics Integration (beta)",
   bs4Dash::dashboardHeader(title = "Lipid Annotation (NRP V1.0)"),
   ####2.side menu####
   bs4Dash::dashboardSidebar(
