@@ -1,11 +1,7 @@
-library(ggplot2)
 library(tidyr)
-library(ggrepel)
 library(propagate)
 library(investr)
 library(tidyverse)
-library(ggplot2)
-library(ggrepel)
 # Simple.pick -------------------------------------------------------------
 profilePretreat2 <- function(
   file,
