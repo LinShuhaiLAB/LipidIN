@@ -72,8 +72,7 @@ ui <- bs4Dash::dashboardPage(
         tags$br(),
         tags$br(),
         '',
-        tags$br(),
-        img(src = "int1.png", width = '100%')
+        tags$br()
       ),
     ),
     ####3.2 part2 body####
