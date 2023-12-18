@@ -7,8 +7,6 @@ pkg <- c('propagate',
          'Rcpp',
          'shiny',
          'shinydashboard',
-         'ggplot2',
-         'ggrepel',
          'propagate',
          'investr',
          'ggrepel'
@@ -38,11 +36,6 @@ library(xcms)
 library(Rcpp)
 library(shiny)
 library(shinydashboard)
-library(ggplot2)
-library(ggrepel)
-library(propagate)
-library(investr)
-library(ggrepel)
 source('sourceFunction.R')
 sourceCpp('removeRowsWithinError.cpp')
 sourceCpp('all.cpp')
