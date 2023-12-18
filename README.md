@@ -3,11 +3,6 @@
 
 **Table of Contents**
 
-[TOCM]
-
-[TOC]
-
-
 
 Introduction
 =============
