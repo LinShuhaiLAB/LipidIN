@@ -1,4 +1,4 @@
-README for LipidIN
+LipidIN
 ===
 Introduction
 ---
