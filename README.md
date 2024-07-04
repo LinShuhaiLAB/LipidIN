@@ -1,4 +1,5 @@
-##README for LipidIN
+#README for LipidIN
+
 ###Introduction
 The LipidIN is an automated tool designed to facilitate the rapid and accurate identification of lipids in biological samples. This software is applicable to a variety of instruments and uses advanced models, algorithms, and AI technology to automatically analyze the composition of lipids in samples. By using this software, users can identify lipids without the need to establish a standard mass spectrometry library, saving significant time and effort while improving the accuracy and reliability of lipid identification.
 
