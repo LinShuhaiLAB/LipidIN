@@ -1,9 +1,11 @@
-#README for LipidIN
-
-###Introduction
+README for LipidIN
+===
+Introduction
+---
 The LipidIN is an automated tool designed to facilitate the rapid and accurate identification of lipids in biological samples. This software is applicable to a variety of instruments and uses advanced models, algorithms, and AI technology to automatically analyze the composition of lipids in samples. By using this software, users can identify lipids without the need to establish a standard mass spectrometry library, saving significant time and effort while improving the accuracy and reliability of lipid identification.
 
-###Features
+Features
+---
 Mass Spectrometry Peak Processing Module: Utilizes existing R packages to process mass spectrometry data in mzML format.
 Non-Prior Information Secondary Matching Module: Performs secondary matching with theoretical or real mass spectrometry libraries and normalizes the matching results.
 Heuristic Search Module: Based on the relative position of primary information, it conducts heuristic searches using secondary matching scores as prior information to re-evaluate high-score matches.
