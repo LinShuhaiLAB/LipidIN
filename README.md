@@ -12,17 +12,20 @@ Heuristic Search Module: Based on the relative position of primary information, 
 Prior Information-Based Secondary Matching Module: Enhances poor secondary matching results using primary relative position relationships for better accuracy.
 Reverse Lipid Fingerprint Spectrogram Module：Predict  lipid fingerprint spectrogram using the model  we designed inspired by KAN and Muit-head attention.
 
-###System Architecture
+System Architecture
+---
 The system  main development languages being R，python and C++. While R ,python handles backend processes and C++ accelerates the program. The software employs greedy secondary matching algorithms, heuristic search algorithms, and prior information-based spectrum enhancement algorithms for mass spectrometry analysis, outputting the identification results in CSV format.Using the model to generate reverse lipid fingerprint spectrograms, independent of sample matrices, instruments.
 
-###Modules Description
+Modules Description
+---
 Mass Spectrometry Peak Processing Module: Processes mzML format data, centralizes peaks, and converts them into list format for easier use.
 Non-Prior Information Secondary Matching Module: Matches mass spectrometry peaks with standard libraries using primary and secondary information.
 Heuristic Search Module: Reassesses high-confidence matches based on primary information relationships.
 Prior Information-Based Secondary Matching Module: Enhances and rematches poor spectrum peaks based on primary relative positions.
 Reverse Lipid Fingerprint Spectrogram Module:Generates the reverse lipid fingerprint spectrograms.
 
-###Usage Instructions
+Usage Instructions
+---
 Data Input: Select and upload the mzML format file.
 Parameter Selection: Choose appropriate parameters for peak processing.
 Secondary Matching: Upload the secondary database and set matching parameters.
