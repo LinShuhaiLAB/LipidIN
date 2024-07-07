@@ -24,8 +24,16 @@ The system  main development languages being R，python and C++. While R ,python
 Modules Description
 ---
 `Mass Spectrometry Peak Processing Module:`Processes mzML format data, centralizes peaks, and converts them into list format for easier use.
-
-<img width="541" alt="1720338370417" src="https://github.com/LinShuhaiLAB/LipidIN/assets/154107118/9cd2a838-af8d-4860-9ac5-b3598698c5ff">
+```
+##### data preprocessing Using 'RaMS' package #####
+source(paste(getwd(),'/preprocessing_RaMS.r',sep=''))
+preprocessing_RaMS(filename,ESI,MS2_filter)
+# filename: Location of .mzML file, for example '.../demo pos/QC_POS1.mzML'.
+# ESI: 'p' for positive ionization mode，
+#      ‘n1’ for negative ionization mode [M+COOH]-，
+#      'n2' for negative ionization mode [M+CH3COO]-.
+# MS2_filter: a value of 0-1, MS2 fragments with intensity lower than the MS2_filter will be deleted
+```
 
 `Expeditious querying module (EQ) Module:`Matches mass spectrometry peaks with standard libraries using primary and secondary information.
 
