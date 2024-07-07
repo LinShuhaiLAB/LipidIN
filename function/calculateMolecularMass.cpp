@@ -13,6 +13,7 @@ NumericVector calculateMolecularMass(CharacterVector formulas) {
     {"O", 15.99491462},
     {"N", 14.003074004},
     {"P", 30.973761998},
+    {"F", 18.998403163},
     {"S", 31.972071174}
   };
   
