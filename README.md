@@ -24,6 +24,7 @@ The system  main development languages being R，python and C++. While R ,python
 Modules Description
 ---
 `Mass Spectrometry Peak Processing Module:`Processes mzML format data, centralizes peaks, and converts them into list format for easier use.
+
 ```
 ##### data preprocessing Using 'RaMS' package #####
 source(paste(getwd(),'/preprocessing_RaMS.r',sep=''))
@@ -37,13 +38,30 @@ preprocessing_RaMS(filename,ESI,MS2_filter)
 
 `Expeditious querying module (EQ) Module:`Matches mass spectrometry peaks with standard libraries using primary and secondary information.
 
-![1720338505891](https://github.com/LinShuhaiLAB/LipidIN/assets/154107118/bc5770a9-68f8-400e-91b9-980c7b4358ab)
+```
+##### EQ module annotation #####
+load(paste(getwd(),'/MS1_MS2_library.rda',sep=''))
+source(paste(getwd(),'/EQ.r',sep=''))
+EQ(filename,ppm1,ppm2,ESI)
+# filename: Location of .rda file output by data preprocessing, for example '.../demo pos/QC_POS1.rda'.
+# ppm1: MS1 m/z tolerance at parts per million (ppm)
+# ppm2: MS2 m/z tolerance at parts per million (ppm)
+# ESI: 'p' for positive ionization mode，
+#      ‘n1’ for negative ionization mode [M+COOH]-，
+#      'n2' for negative ionization mode [M+CH3COO]-.
+```
 
 `The Lipid Categories Intelligence (LCI) Module:`Reassesses high-confidence matches based on primary information relationships.
 
-`The Lipid Categories Intelligence prediction Module:`Enhances and rematches poor spectrum peaks based on primary relative positions.
+```
+# LCI去除假阳性 ----------------------------------------------------------------
+source(paste(getwd(),'/LCI.r',sep=''))
+env <- new.env()
+LCI(filename)
+# filename: Location of .rda file output by data preprocessing, for example '.../demo pos/QC_POS1.rda'.
+```
 
-<img width="461" alt="1720338594891" src="https://github.com/LinShuhaiLAB/LipidIN/assets/154107118/752454f8-7e30-42a0-9386-e8db526eefa6">
+`The Lipid Categories Intelligence prediction Module:`Enhances and rematches poor spectrum peaks based on primary relative positions.
 
 `Reverse Lipid Fingerprint Spectrogram Module:`WMYn generates the reverse lipid fingerprint spectrograms.
 
