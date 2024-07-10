@@ -69,9 +69,9 @@ if __name__ == "__main__":
     output_folder = " "
     batch_process(data_folder, output_folder)
 
-#data_folder is your input data path.
- output_folder is your output data path.
- The input data include a matrix and a vector for training at least.
+# data_folder is your input data path.
+# output_folder is your output data path.
+# The input data include a matrix and a vector for training at least.
 ```
 
 Usage Instructions
