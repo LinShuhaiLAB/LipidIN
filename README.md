@@ -64,9 +64,14 @@ LCI(filename)
 `Reverse Lipid Fingerprint Spectrogram Module:`WMYn generates the reverse lipid fingerprint spectrograms.
 
 ```
-    data_folder = "Your input data path"
-    output_folder = "Your oupt data path"
-#The input data include a matrix and a vector for training at least.
+if __name__ == "__main__":
+    data_folder = " "
+    output_folder = " "
+    batch_process(data_folder, output_folder)
+
+#data_folder is your input data path.
+ output_folder is your output data path.
+ The input data include a matrix and a vector for training at least.
 ```
 
 Usage Instructions
