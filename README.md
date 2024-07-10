@@ -54,16 +54,20 @@ EQ(filename,ppm1,ppm2,ESI)
 `The Lipid Categories Intelligence (LCI) Module:`Reassesses high-confidence matches based on primary information relationships.
 
 ```
-# LCI去除假阳性 ----------------------------------------------------------------
+# LCI----------------------------------------------------------------
 source(paste(getwd(),'/LCI.r',sep=''))
 env <- new.env()
 LCI(filename)
 # filename: Location of .rda file output by data preprocessing, for example '.../demo pos/QC_POS1.rda'.
 ```
 
-`The Lipid Categories Intelligence prediction Module:`Enhances and rematches poor spectrum peaks based on primary relative positions.
-
 `Reverse Lipid Fingerprint Spectrogram Module:`WMYn generates the reverse lipid fingerprint spectrograms.
+
+```
+    data_folder = "Your input data path"
+    output_folder = "Your oupt data path"
+#The input data include a matrix and a vector for training at least.
+```
 
 Usage Instructions
 ---
