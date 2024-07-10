@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
 # data_folder is your input data path.
 # output_folder is your output data path.
-# The input data include a matrix and a vector for training at least.
+# The input data include a matrix and a vector for training at least.For example AAA.csv(matrix) and BBB.csv(vector). 
 ```
 
 Usage Instructions
