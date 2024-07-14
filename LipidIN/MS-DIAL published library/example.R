@@ -1,4 +1,5 @@
 ##### data preprocessing Using 'RaMS' package #####
+env=new.env()
 source(paste(getwd(),'/preprocessing_RaMS.r',sep=''))
 preprocessing_RaMS(filename,ESI,MS2_filter)
 # filename: Location of .mzML file, for example '.../demo pos/QC_POS1.mzML'.
