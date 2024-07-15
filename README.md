@@ -21,21 +21,7 @@ The system  main development languages being R，python and C++. While R ,python
 
 Modules Description
 ---
-Usage Instructions：
----
-`Data Input:` Select and upload the mzML format file.
-
-`Parameter Selection:` Choose appropriate parameters for peak processing.
-
-`Secondary Matching:` Upload the secondary database and set matching parameters.
-
-`Heuristic Search:` Perform heuristic search based on secondary matching results.
-
-`Enhanced Matching:` Re-evaluate low-confidence matches with prior information and output final results.
-
-`Mass Spectrometry Peak Processing Module:`Processes mzML format data, centralizes peaks, and converts them into list format for easier use.
-
-`Reverse Lipid Fingerprint Spectrogram Predicting:`Using the model to generate reverse lipid fingerprint spectrograms, independent of sample matrices, instruments.
+![Fig 1-1](https://github.com/user-attachments/assets/7c2470c4-7609-40fe-9ce5-c7167dca8aa9)
 
 We provide the demo which named demo of LipidIN (without .mzML) under LipidIN/MS-DIAL published library 
 
