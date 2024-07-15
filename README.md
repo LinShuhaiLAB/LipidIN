@@ -19,7 +19,7 @@ System Architecture
 ---
 The system  main development languages being R，python and C++. While R ,python handles backend processes and C++ accelerates the program. The software employs greedy secondary matching algorithms, heuristic search algorithms, and prior information-based spectrum enhancement algorithms for mass spectrometry analysis, outputting the identification results in CSV format.Using the model to generate reverse lipid fingerprint spectrograms, independent of sample matrices, instruments.
 
-Modules Description
+Modules Description and Usage Instructions
 ---
 ![Fig 1-1](https://github.com/user-attachments/assets/7c2470c4-7609-40fe-9ce5-c7167dca8aa9)
 
