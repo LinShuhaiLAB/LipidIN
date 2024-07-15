@@ -24,7 +24,9 @@ The system  main development languages being R，python and C++. While R ,python
 Modules Description
 ---
 `Mass Spectrometry Peak Processing Module:`Processes mzML format data, centralizes peaks, and converts them into list format for easier use.
+
 We provide the demo which named demo of LipidIN (without .mzML) under LipidIN/MS-DIAL published library 
+
 ```
 ##### data preprocessing Using 'RaMS' package #####
 env=new.env()
@@ -65,6 +67,7 @@ LCI(filename)
 `Reverse Lipid Fingerprint Spectrogram Module:`WMYn generates the reverse lipid fingerprint spectrograms.
 
 We provide pre-trained weights. If you need to use them, please download the pre-trained weights and use `predict.py`.
+
 ```
 if __name__ == "__main__":
     data_path =  " " 
@@ -73,7 +76,9 @@ if __name__ == "__main__":
 # data_path is your input data path.
 # project_folder is pre-trained weights path.
 ```
+
 If weights are not available, and for your convenience, we recommend using `train.py`.
+
 ```
 if __name__ == "__main__":
     data_folder = " "
