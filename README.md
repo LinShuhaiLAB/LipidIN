@@ -24,7 +24,7 @@ The system  main development languages being R，python and C++. While R ,python
 Modules Description
 ---
 `Mass Spectrometry Peak Processing Module:`Processes mzML format data, centralizes peaks, and converts them into list format for easier use.
-
+We provide the demo which named demo of LipidIN (without .mzML) under LipidIN/MS-DIAL published library 
 ```
 ##### data preprocessing Using 'RaMS' package #####
 env=new.env()
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 # output_folder is your output data path.
 # The input data include a matrix and a vector for training at least.For example AAA.csv(matrix) and AAA_GT.csv(vector).
 # If you need batch processing, please name the corresponding files in the following format, for example, `aaa.csv` with `aaa_GT.csv` ; `bbb.csv` with `bbb_GT.csv`.
-# Specifically, please extract data.zip under the demo directory. You can use more data. 
+# We provide the demo directory, meanwhile, You can use more data. 
 ```
 
 Usage Instructions
