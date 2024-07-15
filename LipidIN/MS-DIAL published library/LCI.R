@@ -1666,4 +1666,16 @@ LCI <- function(FNIII){
     write.csv(da.test,paste(gsub('.rda','',FNIII),'_part1_result.csv',sep=''))
   }
   
+  
+  # 整理文件
+  setwd(gsub("\\/[^\\/]*$","",filename))
+  Fk <- list.files()
+  Fk <- Fk[grep(gsub('.rda','',gsub('.*\\/','',filename)),Fk)]
+  d <- read.csv(Fk[grep('part1_result.csv',Fk)])
+  d <- d %>% group_by(Title) %>% top_n(1,final.score)
+  d <- d[,c("peak.num","subclass","Title","mz","rt","Adduct","MS2.score1",
+            "MS2.score2","rule1.score.Stand","rule2.score.Stand","final.score")]
+  d <- separate(d,'Title',into=c('Title','Compound'),sep='_CAH_')
+  file.remove(Fk[-grep('.rda',Fk)])
+  write.csv(d,gsub('.rda','_final_output.csv',Fk[grep('.rda',Fk)]),row.names=F)
 }
