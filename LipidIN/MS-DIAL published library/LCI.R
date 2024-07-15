@@ -460,7 +460,9 @@ LCI <- function(FNIII){
                    Chain=gsub('.* ','',gsub('_CAH_.*','',pos$`Metabolite name`)))
   pos <- MSDIAL.pretreat2(d2)
   pos$Peak.num <- da$Peak.num
-  pos$rawmz <- da$Tmz
+  pos$rawmz <- do.call(rbind,lapply(1:nrow(da),function(cm){
+    calMS2(da[cm,]$Fomula)
+  }))
   pos$Score <- da$Score
   pos$cluster <- paste(pos$subclass, pos$Total.Uns, pos$Adduct, sep = '')
   pos$score.match <- da$score.match
