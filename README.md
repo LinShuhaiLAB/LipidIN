@@ -21,8 +21,8 @@ The system  main development languages being R，python and C++. While R ,python
 
 Modules Description
 ---
-Usage Instructions
----
+Usage Instructions：
+
 `Data Input:` Select and upload the mzML format file.
 
 `Parameter Selection:` Choose appropriate parameters for peak processing.
