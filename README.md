@@ -38,7 +38,7 @@ Usage Instructions：
 `Reverse Lipid Fingerprint Spectrogram Predicting:`Using the model to generate reverse lipid fingerprint spectrograms, independent of sample matrices, instruments.
 
 We provide the demo which named demo of LipidIN (without .mzML) under LipidIN/MS-DIAL published library 
----
+
 ```
 ##### data preprocessing Using 'RaMS' package #####
 env=new.env()
@@ -79,7 +79,7 @@ LCI(filename)
 `Reverse Lipid Fingerprint Spectrogram Module:`WMYn generates the reverse lipid fingerprint spectrograms.
 
 We provide pre-trained weights. If you need to use them, please download the pre-trained weights and use `predict.py`.
----
+
 ```
 if __name__ == "__main__":
     data_path =  " " 
@@ -90,7 +90,7 @@ if __name__ == "__main__":
 ```
 
 If weights are not available, and for your convenience, we recommend using `train.py`.
----
+
 ```
 if __name__ == "__main__":
     data_folder = " "
