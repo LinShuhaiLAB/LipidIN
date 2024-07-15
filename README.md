@@ -79,7 +79,7 @@ LCI(filename)
 `Reverse Lipid Fingerprint Spectrogram Module:`WMYn generates the reverse lipid fingerprint spectrograms.
 
 We provide pre-trained weights. If you need to use them, please download the pre-trained weights and use `predict.py`.
-
+---
 ```
 if __name__ == "__main__":
     data_path =  " " 
@@ -90,7 +90,7 @@ if __name__ == "__main__":
 ```
 
 If weights are not available, and for your convenience, we recommend using `train.py`.
-
+---
 ```
 if __name__ == "__main__":
     data_folder = " "
