@@ -95,10 +95,10 @@ def process_files(data_folder, weight_folder, gt_folder, prediction_folder, mode
                 print(f"Weight file not found for {data_filename}. Please use the training module.")
 
 if __name__ == "__main__":
-    data_path = sys.path[0]+ "/data"
-# 项目文件夹相对路径
-    project_folder = Path("../Fingerprint Peak Prediction Step3.1")
-    mode = "neg"  # 输入参数，"neg" 或 "pos"
+    data_path =  " " 
+    # 项目文件夹相对路径
+    project_folder = Path(" ")
+    mode = " "  # 输入参数，"neg" 或 "pos"
 
     if mode not in ["neg", "pos"]:
         print("Invalid mode. Please choose 'neg' or 'pos'.")
