@@ -6,7 +6,6 @@ import torch.optim as optim
 import pandas as pd
 import random
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 class KanLikeLayer(nn.Module):
@@ -111,7 +110,6 @@ def load_data(csv_file):
     df = pd.read_csv(csv_file)
     labels = df.columns[1:].tolist()
 
-    # 提取数据部分并做归一化
     data = df.iloc[:, 1:].values
     data = data.T
 
@@ -137,12 +135,6 @@ def set_seed(seed):
     np.random.seed(seed)
 
 
-def save_loss(loss_values, filename):
-    with open(filename, 'w') as f:
-        for loss in loss_values:
-            f.write(str(loss) + '\n')
-
-
 class CustomLRScheduler:
     def __init__(self, optimizer, lr_steps, patience=10):
         self.optimizer = optimizer
@@ -165,17 +157,15 @@ class CustomLRScheduler:
                 new_lr = self.lr_steps[self.step_index]
                 for param_group in self.optimizer.param_groups:
                     param_group['lr'] = new_lr
-                print(f"Learning rate adjusted to {new_lr}")
                 self.counter = 0
 
     def get_last_lr(self):
         return [group['lr'] for group in self.optimizer.param_groups]
 
 
-def main(csv_add, target_vec, weight_name, loss_name, prediction_name):
+def main(csv_add, target_vec, weight_name, final_output_name):
     set_seed(42)
 
-    # 加载并预处理数据
     train_csv_file = csv_add
     labels, train_data = load_data(train_csv_file)
     target_vector_csv = target_vec
@@ -186,26 +176,21 @@ def main(csv_add, target_vec, weight_name, loss_name, prediction_name):
     hidden_dim = 512
     batch_size = len(labels)
 
-    # 初始化模型
     model = WMY(input_dim, output_dim, num_layers=6, num_heads=8, hidden_dim=hidden_dim, dropout=0.1,
                 batch_size=batch_size)
 
-    # 转换数据为张量
     train_data_tensor = preprocess_data(train_data)
     target_vector_tensor = torch.tensor(target_vector, dtype=torch.float32).unsqueeze(0)
 
-    # 定义损失函数和优化器
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
 
-    # 定义自定义学习率调度器
     lr_steps = [0.01, 0.01, 0.001, 0.001, 0.0001]
     scheduler = CustomLRScheduler(optimizer, lr_steps, patience=500)
 
     num_epochs = 3000
-    loss_threshold = 40  # 提前停止阈值
+    loss_threshold = 40
     best_loss = float('inf')
-    loss_values = []
 
     for epoch in range(num_epochs):
         model.train()
@@ -214,27 +199,16 @@ def main(csv_add, target_vec, weight_name, loss_name, prediction_name):
         loss = criterion(output, target_vector_tensor)
         loss.backward()
         optimizer.step()
-        loss_values.append(loss.item())
 
-        if (epoch + 1) % 100 == 0:
-            print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.8f}")
-            print(f"Learning rate: {scheduler.get_last_lr()}")  # 打印学习率
-
-        # 调整学习率
         scheduler.step(loss.item())
 
-        # 保存最佳模型
         if loss.item() < best_loss:
             best_loss = loss.item()
             torch.save(model.state_dict(), weight_name)
 
         if loss.item() < loss_threshold:
-            print(f"提前停止于第 {epoch + 1} 轮，损失为 {loss.item():.8f}")
             break
 
-    save_loss(loss_values, loss_name)
-
-    # 使用最佳模型进行预测
     best_model = WMY(input_dim, output_dim, num_layers=6, num_heads=8, hidden_dim=hidden_dim, dropout=0.1,
                      batch_size=batch_size)
     best_model.load_state_dict(torch.load(weight_name))
@@ -243,32 +217,37 @@ def main(csv_add, target_vec, weight_name, loss_name, prediction_name):
     with torch.no_grad():
         prediction = best_model(train_data_tensor)
         prediction = prediction.squeeze(0).numpy()
-        np.savetxt(prediction_name, prediction, delimiter=',')
+
+    gt_df = pd.read_csv(target_vector_csv, header=None)
+    prediction_df = pd.DataFrame(prediction)
+
+    gt_df.iloc[1:, 1] = prediction_df.iloc[:, 0].clip(lower=0)
+    gt_df.to_csv(final_output_name, index=False, header=False)
 
 
-def batch_process(data_folder, output_folder):
-    os.makedirs(output_folder, exist_ok=True)
+def batch_process(data_folder, project_folder):
+    os.makedirs(os.path.join(project_folder, "result"), exist_ok=True)
+    os.makedirs(os.path.join(project_folder, "weights"), exist_ok=True)
     csv_files = glob.glob(os.path.join(data_folder, "*.csv"))
 
     for csv_file in csv_files:
         file_name = os.path.basename(csv_file)
         if "_GT" in file_name or "prediction" in file_name:
-            continue  # 跳过目标向量和预测文件
+            continue
 
         target_file = os.path.join(data_folder, file_name.replace(".csv", "_GT.csv"))
 
         if not os.path.exists(target_file):
-            print(f"Target file {target_file} not found. Skipping {csv_file}.")
             continue
 
-        weight_name = os.path.join(output_folder, f"{os.path.splitext(file_name)[0]}_weights.pth")
-        loss_name = os.path.join(output_folder, f"{os.path.splitext(file_name)[0]}_loss_values.txt")
-        prediction_name = os.path.join(output_folder, f"{os.path.splitext(file_name)[0]}_prediction_out.csv")
+        weight_name = os.path.join(project_folder, "weights", f"{os.path.splitext(file_name)[0]}_weights.pth")
+        final_output_name = os.path.join(project_folder, "result", f"{os.path.splitext(file_name)[0]}_prediction.csv")
 
-        main(csv_file, target_file, weight_name, loss_name, prediction_name)
+        main(csv_file, target_file, weight_name, final_output_name)
+
 
 
 if __name__ == "__main__":
-    data_folder = "I:/download/data/old/NEG_"
-    output_folder = "I:/download/data/old/NEG_/output"
+    data_folder = " "
+    output_folder = ' '
     batch_process(data_folder, output_folder)
