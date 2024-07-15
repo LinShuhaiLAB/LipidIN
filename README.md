@@ -66,6 +66,13 @@ LCI(filename)
 
 ```
 if __name__ == "__main__":
+    data_path =  " " 
+    # 项目文件夹相对路径
+    project_folder = Path(" ")
+    mode = " "  # 输入参数，"neg" 或 "pos"
+```
+```
+if __name__ == "__main__":
     data_folder = " "
     output_folder = ' '
     batch_process(data_folder, output_folder)
