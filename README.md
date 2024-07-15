@@ -68,9 +68,8 @@ We provide pre-trained weights. If you need to use them, please download the pre
 ```
 if __name__ == "__main__":
     data_path =  " " 
-    # 项目文件夹相对路径
     project_folder = Path(" ")
-    mode = " "  # 输入参数，"neg" 或 "pos"
+    mode = " "  # "neg" or "pos"
 # data_path is your input data path.
 # project_folder is pre-trained weights path.
 ```
