@@ -82,7 +82,8 @@ if __name__ == "__main__":
 
 # data_folder is your input data path.
 # output_folder is your output data path.
-# The input data include a matrix and a vector for training at least.For example AAA.csv(matrix) and BBB.csv(vector).
+# The input data include a matrix and a vector for training at least.For example AAA.csv(matrix) and AAA_GT.csv(vector).
+# If you need batch processing, please name the corresponding files in the following format, for example, `aaa.csv` with `aaa_GT.csv` ; `bbb.csv` with `bbb_GT.csv`.
 # Specifically, please extract data.zip under the demo directory. You can use more data. 
 ```
 
