@@ -55,7 +55,7 @@ EQ(filename,ppm1,ppm2,ESI)
 `The Lipid Categories Intelligence (LCI) Module:`Reassesses high-confidence matches based on primary information relationships.
 
 ```
-# LCI----------------------------------------------------------------
+# LCI
 source(paste(getwd(),'/LCI.r',sep=''))
 env <- new.env()
 LCI(filename)
