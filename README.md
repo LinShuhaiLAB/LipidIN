@@ -73,8 +73,7 @@ if __name__ == "__main__":
 # data_path is your input data path.
 # project_folder is pre-trained weights path.
 ```
-If there are no corresponding weights, please use `train.py`.
-
+If weights are not available, and for your convenience, we recommend using `train.py`.
 ```
 if __name__ == "__main__":
     data_folder = " "
