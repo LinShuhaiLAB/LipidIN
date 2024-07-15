@@ -67,7 +67,7 @@ LCI(filename)
 ```
 if __name__ == "__main__":
     data_folder = " "
-    output_folder = " "
+    output_folder = ' '
     batch_process(data_folder, output_folder)
 
 # data_folder is your input data path.
