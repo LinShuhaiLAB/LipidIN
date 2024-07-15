@@ -13,8 +13,6 @@ Features
 
 `The Lipid Categories Intelligence (LCI) Module:`Based on the relative position of primary information, it conducts heuristic searches using secondary matching scores as prior information to re-evaluate high-score matches.
 
-`The Lipid Categories Intelligence prediction Module:`Enhances poor secondary matching results using primary relative position relationships for better accuracy.
-
 `Reverse Lipid Fingerprint Spectrogram Module:`WMYn predict  lipid fingerprint spectrogram using the model  we designed inspired by KAN and Muit-head attention.
 
 System Architecture
@@ -23,6 +21,18 @@ The system  main development languages being R，python and C++. While R ,python
 
 Modules Description
 ---
+Usage Instructions
+---
+`Data Input:` Select and upload the mzML format file.
+
+`Parameter Selection:` Choose appropriate parameters for peak processing.
+
+`Secondary Matching:` Upload the secondary database and set matching parameters.
+
+`Heuristic Search:` Perform heuristic search based on secondary matching results.
+
+`Enhanced Matching:` Re-evaluate low-confidence matches with prior information and output final results.
+
 `Mass Spectrometry Peak Processing Module:`Processes mzML format data, centralizes peaks, and converts them into list format for easier use.
 
 We provide the demo which named demo of LipidIN (without .mzML) under LipidIN/MS-DIAL published library 
@@ -91,17 +101,4 @@ if __name__ == "__main__":
 # If you need batch processing, please name the corresponding files in the following format, for example, `aaa.csv` with `aaa_GT.csv` ; `bbb.csv` with `bbb_GT.csv`.
 # We provide the demo directory, meanwhile, You can use more data. 
 ```
-
-Usage Instructions
----
-`Data Input:` Select and upload the mzML format file.
-
-`Parameter Selection:` Choose appropriate parameters for peak processing.
-
-`Secondary Matching:` Upload the secondary database and set matching parameters.
-
-`Heuristic Search:` Perform heuristic search based on secondary matching results.
-
-`Enhanced Matching:` Re-evaluate low-confidence matches with prior information and output final results.
-
 `Reverse Lipid Fingerprint Spectrogram Predicting:`Using the model to generate reverse lipid fingerprint spectrograms, independent of sample matrices, instruments.
