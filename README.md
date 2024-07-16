@@ -21,7 +21,6 @@ The system  main development languages being R，python and C++. While R ,python
 
 Modules Description and Usage Instructions
 ---
-![Fig 1-1](https://github.com/user-attachments/assets/7c2470c4-7609-40fe-9ce5-c7167dca8aa9)
 
 We provide the demo which named demo of LipidIN (without .mzML) under LipidIN/MS-DIAL published library 
 
