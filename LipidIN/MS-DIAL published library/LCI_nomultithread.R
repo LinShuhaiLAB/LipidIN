@@ -787,14 +787,20 @@ LCI_nomultithread <- function(FNIII){
   
   
   # 整理文件
-  setwd(gsub("\\/[^\\/]*$","",filename))
+  setwd(gsub("\\/[^\\/]*$","",FNIII))
   Fk <- list.files()
-  Fk <- Fk[grep(gsub('.rda','',gsub('.*\\/','',filename)),Fk)]
+  Fk <- Fk[grep(gsub('.rda','',gsub('.*\\/','',FNIII)),Fk)]
   d <- read.csv(Fk[grep('part1_result.csv',Fk)])
   d <- d %>% group_by(Title) %>% top_n(1,final.score)
   d <- d[,c("peak.num","subclass","Title","mz","rt","Adduct","MS2.score1",
             "MS2.score2","rule1.score.Stand","rule2.score.Stand","final.score")]
-  d <- separate(d,'Title',into=c('Title','Compound'),sep='_CAH_')
   file.remove(Fk[-grep('.rda',Fk)])
+  d$top_n <- 'Top > 3'
+  d1 <- d %>% group_by(peak.num) %>% top_n(3,final.score)
+  d[which(d$Title%in%d1$Title),]$top_n <- 'Top 3'
+  d1 <- d %>% group_by(peak.num) %>% top_n(2,final.score)
+  d[which(d$Title%in%d1$Title),]$top_n <- 'Top 2'
+  d1 <- d %>% group_by(peak.num) %>% top_n(1,final.score)
+  d[which(d$Title%in%d1$Title),]$top_n <- 'Top 1'
   write.csv(d,gsub('.rda','_final_output.csv',Fk[grep('.rda',Fk)]),row.names=F)
 }

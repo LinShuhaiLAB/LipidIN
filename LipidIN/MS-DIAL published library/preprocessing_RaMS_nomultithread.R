@@ -28,7 +28,7 @@ preprocessing_RaMS_nomultithread <- function(FN1,ESImode,MS2_filter){
       PrecursorIntensity=1,
       mode=ESImode,
       rt=as.numeric(c[1,1]),
-      MS2mz=data.frame(da.temp.mz=c[,3],da.temp.intensity=c[,4])
+      MS2mz=data.frame(da.temp.mz=unlist(c[,3]),da.temp.intensity=unlist(c[,4]))
     )
     aa <- count.1$MS2mz
     aa <- aa[which(aa$da.temp.intensity>MS2_filter*max(count.1$MS2mz[,2])),]

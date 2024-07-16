@@ -484,13 +484,15 @@ EQ <- function(FNIII,ppm1,ppm2,ESI){
   da2$Tmz <- 0
   da <- da2[which(da2$score.match>=0),]
   if(ESI=='p'){
-    da <- da[-grep('\\]-',da$Adduct),]
+    da <- da[grep('\\]\\+',da$Adduct),]
   }
   if(ESI=='n1'){
+    da <- da[grep('\\]-',da$Adduct),]
     da <- da[which(da$Adduct!='[M+CH3COO]-'),]
   }
   if(ESI=='n2'){
-    da <- da[which(da$Adduct!='[M+COOH]-'),]
+    da <- da[grep('\\]-',da$Adduct),]
+    da <- da[which(da$Adduct!='[M+HCOO]-'),]
   }
   write.csv(da,paste(gsub('.rda','',FNIII),'_NPG_processed.csv',sep=''))
 }
