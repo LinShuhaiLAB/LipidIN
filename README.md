@@ -35,6 +35,17 @@ preprocessing_RaMS(filename,ESI,MS2_filter)
 #      ‘n1’ for negative ionization mode [M+COOH]-，
 #      'n2' for negative ionization mode [M+CH3COO]-.
 # MS2_filter: a value of 0-1, MS2 fragments with intensity lower than the MS2_filter*max intensity will be deleted
+
+
+##### without multithread data preprocessing Using 'RaMS' package #####
+source(paste(getwd(),'/preprocessing_RaMS_nomultithread.r',sep=''))
+env <- new.env()
+preprocessing_RaMS_nomultithread(filename,ESI,MS2_filter)
+# filename: Location of .mzML file, for example '.../demo pos/QC_POS1.mzML'.
+# ESI: 'p' for positive ionization mode，
+#      ‘n1’ for negative ionization mode [M+COOH]-，
+#      'n2' for negative ionization mode [M+CH3COO]-.
+# MS2_filter: a value of 0-1, MS2 fragments with intensity lower than the MS2_filter*max intensity will be deleted
 ```
 
 `Expeditious querying module (EQ) Module:`Matches mass spectrometry peaks with standard libraries using primary and secondary information.
