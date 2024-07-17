@@ -31,7 +31,7 @@ def WYMn_predict(csv_add, weight_name):
 
     with torch.no_grad():
         prediction = model(train_data_tensor)
-        prediction = prediction.squeeze(0).numpy()  # 去除 batch_size 维度并转换为 NumPy 数组
+        prediction = prediction.squeeze(0).numpy()  
 
     return prediction
 
