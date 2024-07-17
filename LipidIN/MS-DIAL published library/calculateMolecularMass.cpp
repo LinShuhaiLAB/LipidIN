@@ -1,12 +1,12 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// [[Rcpp::export]]
+
 NumericVector calculateMolecularMass(CharacterVector formulas) {
   int n = formulas.size();
   NumericVector masses(n);
   
-  // Map of element symbols to atomic masses
+
   std::map<std::string, double> atomicMasses = {
     {"H", 1.007825032},
     {"C", 12},
