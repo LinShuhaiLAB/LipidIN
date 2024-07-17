@@ -1,24 +1,17 @@
 MSDIAL.pretreat <- function(da) {
-  # 去除unknown\RIKEN ---------------------------------------------------------------
-  # da <- pos
-  
-  # 处理名字 --------------------------------------------------------------------
+  # da <- pos 
   d2 <- da$`Metabolite name`
   d2 <- gsub(' O-', '-O ', d2)
   d2 <- gsub(' P-', '-P ', d2)
   d2 <- gsub('-SN1', '', d2)
   d2 <- gsub('\\(methyl\\)', '', d2)
   d2 <- gsub('\\/N-', '_', d2)
-  # 根据|划分
   da$total <- gsub('\\|.*', '', d2)
   d2 <- gsub('.*\\|', '', d2)
-  d3 <- d2[str_detect(d2, '\\(FA')]# 处理有（FA 12:6）这种的
-  # 将（FA和其他分开，统一放最后
+  d3 <- d2[str_detect(d2, '\\(FA')]
   d4 <- gsub('.*\\(FA ', '', d3)
   d4 <- gsub('\\).*', '', d4)
-  # 删除（FA xx）
   d3 <- gsub('\\(FA .*\\)', '', d3)
-  # 在原本的名字后面加上-FA
   d3 <- gsub(' ', '-FA ', d3)
   d2[str_detect(d2, '\\(FA')] <- d3
   d2 <- gsub('AHexCer \\(O-', 'AHexCer-O ', d2)
@@ -59,7 +52,6 @@ MSDIAL.pretreat2 <- function(da) {
   # da <- d2
   da <- data.frame(da, Total.C = 0, 'Total Usa' = 0)
   da.total.chain <- da$Chain
-  # 将每条链分开
   count <- matrix(0, 
                   nrow = length(da.total.chain), 
                   ncol = 16)
@@ -87,8 +79,7 @@ MSDIAL.pretreat2 <- function(da) {
       count[i, j * 4 - 3] <- sp.chain[j]
     }
   }
-  count[, 5] <- gsub('\\(', ';\\(', count[, 5])# 针对第二列有部分（OH）前面没有；问题
-  # 接下来按照每四列看一下X:Y;ZO
+  count[, 5] <- gsub('\\(', ';\\(', count[, 5])
   for (ii in 1:4) {
     for (jj in 1:nrow(count)) {
       ddd <- count[jj, 4 * ii - 3]
@@ -109,7 +100,7 @@ MSDIAL.pretreat2 <- function(da) {
       'Total Uns' = apply(count[, c(3, 7, 11, 15)], 1, sum),
       'other' = paste(count[, 4], count[, 8], count[, 12], count[, 16], sep =
                         '')
-    )# 分别求和
+    )
   final.count$other <- gsub('0', '', 
                             final.count$other)
   m <- data.frame(
@@ -127,9 +118,6 @@ MSDIAL.pretreat2 <- function(da) {
   return(m)
 }
 da.delect <- function(da) {
-  # 依据得分作为剔除概率的剔除
-  # da <- d
-  # 计算rawmz和rt误差在指定范围内的点
   da$temp.cluster <- paste(rawmzcluster(da$X, 
                                         da$rawmz, 10 ^ (-5)),
                            rtcluster(da$X, 
@@ -154,29 +142,26 @@ da.delect <- function(da) {
   return(da)
 }
 begin.point <- function(d, rep.time) {
-  # rep.time <- 100
-  # ratio <- 0.4
-  # d <- d
+
   d.mz <- unique(rawmzcluster(d$X, d$rawmz, 10 ^ (-5)))
   if (length(d.mz) < 4) {
-    # 点数少于4，报错
+
     warning("There are too few points to search and fit.")
   }
   if (length(d.mz) >= 4) {
-    # 点数足够开始
+
     n <- max(4, ceiling(0.5 * length(d.mz)))# 抽取数量
     da.temp <- d
     da.temp$label <- rawmzcluster(d$X, d$rawmz, 10 ^ (-5))
     res <- lapply(1:rep.time, function(i) {
-      # 用于重复rep.time次
-      # 先对mz一样的随机保留一个
+
       da.temp1 <-
         do.call(rbind, lapply(1:length(d.mz), function(j) {
-          dddd <- da.temp[which(da.temp$label == d.mz[j]),]# 提取出mz一样的
+          dddd <- da.temp[which(da.temp$label == d.mz[j]),]
           ddddd <-
             sample(1:nrow(dddd),
                    size = 1,
-                   prob = dddd$score.match)# 依据概率抽取一个
+                   prob = dddd$score.match)
           return(dddd[ddddd,])
         }))
       da.temp1 <-
@@ -186,7 +171,7 @@ begin.point <- function(d, rep.time) {
           prob = da.temp1$score.match,
           replace = F
         ),]
-      # 计算损失函数值
+
       a <- list()
       a[[1]] <- da.temp1$X
       a[[2]] <- target.function(da.temp1$rt, da.temp1$rawmz)
@@ -208,7 +193,7 @@ begin.point <- function(d, rep.time) {
 Monotonicity.judgment <- function(x, y) {
   da <- data.frame(x = x, y = y)
   da <- da[order(da$x),]
-  error <- -5 * 10 ^ (-6) * mean(da$y)# 采用了5个ppm
+  error <- -5 * 10 ^ (-6) * mean(da$y)
   if (!is.unsorted(da$y) && all(diff(da$y) >= error)) {
     I1 <- 1
   }
@@ -277,7 +262,7 @@ all_search <- function(bp.point, other.point,target.function.tolerance) {
   fit <- lm(y ~ poly(x, 2), data.frame(x = x.best, y = y.best))
   x.in.num <-
     which(other.point$rt <= max(x.best) &
-            other.point$rt >= min(x.best))# 在起始点的范围内的点进行判断
+            other.point$rt >= min(x.best))
   prep <- data.frame(
     x.num = x.in.num,
     x = other.point[x.in.num,]$rt,
@@ -296,45 +281,44 @@ all_search <- function(bp.point, other.point,target.function.tolerance) {
   }
   label[prep[which(prep$y <= prep$upr &
                      prep$y >= prep$lwr), 1]] <-
-    'best.begin' # 置信区间内点命名
+    'best.begin' 
   mm <-
     data.frame(x = other.point$rt,
                y = other.point$rawmz,
                label = other.point$label)
-  ####3.1.2全局搜索往下####
-  # 从起始点的最小值开始
+
   for (xx in 1:nrow(other.point)) {
     x.best <- mm[which(label == 'best.begin'), 'x']
     y.best <- mm[which(label == 'best.begin'), 'y']
     x.min.data <- x.best[which(x.best == sort(x.best)[2])]
     y.min.data <- y.best[which(x.best == sort(x.best)[2])]
-    # 计算最低点的切线的正弦值
+
     min.best.k <- sin(atan(
       2 * as.numeric(coef(fit))[2] * x.min.data +
         as.numeric(coef(fit))[3] * x.min.data
     ))
-    # 寻找到符合的象限区间的点
+
     data.less <-
       data.frame(num = intersect(which(x < min(x.best)), which(y < min(y.best))),
                  x = x[intersect(which(x < min(x.best)), which(y <
                                                                  min(y.best)))],
                  y = y[intersect(which(x < min(x.best)), which(y <
                                                                  min(y.best)))])
-    # 对于区间内的点求sin值
+
     if (nrow(data.less) > 0) {
       data.less <- do.call(rbind, lapply(1:nrow(data.less), function(i) {
         d = (x.min.data - data.less[i,]$x) / sqrt((x.min.data - data.less[i,]$x) ^
                                                     2 + (y.min.data - data.less[i,]$y) ^ 2)
         data.frame(data.less[i,], sin = d)
       }))
-      # 进一缩小可行域在切线以下
+
       data.less <- data.less[which(data.less$sin < min.best.k),]
-      # 贪婪计算可行域内每个点加入后对目标函数的改变
+
       if (nrow(data.less) > 0) {
         data.less <- do.call(rbind, lapply(1:nrow(data.less), function(i) {
           data.frame(data.less[i,], tf = target.function(c(x.best, data.less[i,]$x), c(y.best, data.less[i,]$y)))
         }))
-        # 选择目标函数值最小并且满足设置的阈值
+
         if (data.less[which.min(data.less$tf),]$tf < target.function.tolerance) {
           label[data.less[which.min(data.less$tf),]$num] <- 'best.begin'
           # print(data.less[which.min(data.less$tf),]$num)
@@ -348,7 +332,7 @@ all_search <- function(bp.point, other.point,target.function.tolerance) {
       break
     }
   }
-  ####3.1.3全局搜索往上###
+
   for (xx in 1:nrow(other.point)) {
     x.best <- mm[which(label == 'best.begin'), 'x']
     y.best <- mm[which(label == 'best.begin'), 'y']
@@ -356,12 +340,12 @@ all_search <- function(bp.point, other.point,target.function.tolerance) {
       x.best[which(x.best == sort(x.best, decreasing = TRUE)[2])]
     y.min.data <-
       y.best[which(x.best == sort(x.best, decreasing = TRUE)[2])]
-    # 计算最低点的切线的正弦值
+
     min.best.k <- sin(atan(
       2 * as.numeric(coef(fit))[2] * x.min.data ^ 2 +
         as.numeric(coef(fit))[3] * x.min.data
     ))
-    # 寻找到符合的象限区间的点
+
     data.less <-
       data.frame(num = intersect(which(x > max(x.best)), which(y > max(y.best))),
                  x = x[intersect(which(x > max(x.best)), which(y >
@@ -374,14 +358,14 @@ all_search <- function(bp.point, other.point,target.function.tolerance) {
                                                     2 + (y.min.data - data.less[i,]$y) ^ 2)
         data.frame(data.less[i,], sin = d)
       }))
-      # 进一缩小可行域在切线以下
+
       data.less <- data.less[which(data.less$sin < min.best.k),]
-      # 贪婪计算可行域内每个点加入后对目标函数的改变
+
       if (nrow(data.less) > 0) {
         data.less <- do.call(rbind, lapply(1:nrow(data.less), function(i) {
           data.frame(data.less[i,], tf = target.function(c(x.best, data.less[i,]$x), c(y.best, data.less[i,]$y)))
         }))
-        # 选择目标函数值最小并且满足设置的阈值
+
         if (data.less[which.min(data.less$tf),]$tf < target.function.tolerance) {
           label[data.less[which.min(data.less$tf),]$num] <- 'best.begin'
           # print(data.less[which.min(data.less$tf),]$num)
@@ -395,7 +379,7 @@ all_search <- function(bp.point, other.point,target.function.tolerance) {
       break
     }
   }
-  # 将拟合曲线上的点包进来（只包括这些最优解起始点包含的范围）
+
   mm1 <- mm[which(mm$label %in% c('best.begin')),]
   fit <- lm(y ~ poly(x, 2), data.frame(x = mm1$x, y = mm1$y))
   prep <- data.frame(
@@ -458,15 +442,15 @@ EQ <- function(FNIII,ppm1,ppm2,ESI){
     return(neg.list[[i]])
   })
   # NPG-MS2 --------------------------------------------------------------------
-  # 构造函数
+
   compare <- new(Comparator)
-  # # 加载数据
+
   # # par-1:sample_list , par-2:library_mz , par-3:ms1_ppm , par-4:ms2_ppm , par-5:library_list
   compare$Load(neg.list,count.data.frame$MZ,ppm1,ppm2,count.list)
   compare$Load2(neg.list,ppm1,ppm2)
-  # 比较谱图
+
   compare$Compare()
-  # 输出csv文件
+
   compare$OutputCsv(paste(gsub('.rda','',FNIII),'_NPG_5ppm.csv',sep=''))
   # result processed --------------------------------------------------------
   cat("\033[32m",paste('Result processed ',FNIII,sep=''),"\n\033[0m")
