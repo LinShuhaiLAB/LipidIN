@@ -18,13 +18,13 @@ MS2::MS2(std::vector<double>&& mz, std::vector<double>&& intensity, std::string&
 	this->m_intensity = move(intensity);
 	this->m_info = info;
 
-	// 计算min_mz和max_mz
+
 	for (auto i : this->m_mz) {
 		this->m_min_mz.push_back(i - i * ppm / 1000000);
 		this->m_max_mz.push_back(i + i * ppm / 1000000);
 	}
 
-	// 计算总强度
+
 	double total_intensity = 0;
 	for (double num : m_intensity) {
 		total_intensity += num;
@@ -137,46 +137,45 @@ void Comparator::Compare()
 
 	clock_t start, end;
 	start = clock();
-	// 索引
+
 	int library_left = 0;
 	int library_right = m_library.size() - 1;
 	int sample_left = 0;
 	int sample_right = m_sample.size() - 1;
 
 
-	// 遍历sample
 	while (sample_left <= sample_right)
 	{
 		int left = library_left;
 		int right = library_right;
 		bool find_sample_left = 0;
 		bool find_sample_right = 0;
-		// 用sample_left遍历library
+
 		while (left <= right) {
 			int mid = (left + right) / 2;
 			double sample_mz = m_sample[sample_left].GetMz();
-			// 如果满足条件
+
 			if (sample_mz >= m_library[mid].GetMinMz() && sample_mz <= m_library[mid].GetMaxMz()) {
-				// 说明找到了
+
 				find_sample_left = 1;
-				// 比较两个二级
+
 				auto compare_ms2_res = CompareMS2(m_sample[sample_left].GetMS2(), m_library[mid].GetMS2());
-				// 加入到结果中
+
 				if (compare_ms2_res.first != 0 && compare_ms2_res.second != 0) {
 					m_compare_res.AddResult(m_sample[sample_left], m_library[mid], compare_ms2_res.first, compare_ms2_res.second);
 				}
-				// 向左和右继续寻找
+
 				int left_t = mid - 1;
 				int right_t = mid + 1;
 				while (left_t >= 0) {
 					if (m_library[left_t].GetMinMz() <= sample_mz && sample_mz <= m_library[left_t].GetMaxMz()) {
-						// 比较两个二级
+
 						compare_ms2_res = CompareMS2(m_sample[sample_left].GetMS2(), m_library[left_t].GetMS2());
-						// 加入到结果中
+
 						if (compare_ms2_res.first != 0 && compare_ms2_res.second != 0) {
 							m_compare_res.AddResult(m_sample[sample_left], m_library[left_t], compare_ms2_res.first, compare_ms2_res.second);
 						}
-						// 向左继续找
+
 						left_t--;
 					}
 					else {
@@ -185,23 +184,23 @@ void Comparator::Compare()
 				}
 				while (right_t <= int(m_library.size() - 1)) {
 					if (m_library[right_t].GetMinMz() <= sample_mz && sample_mz <= m_library[right_t].GetMaxMz()) {
-						// 比较两个二级
+
 						compare_ms2_res = CompareMS2(m_sample[sample_left].GetMS2(), m_library[right_t].GetMS2());
-						// 加入到结果中
+
 						if (compare_ms2_res.first != 0 && compare_ms2_res.second != 0) {
 							m_compare_res.AddResult(m_sample[sample_left], m_library[right_t], compare_ms2_res.first, compare_ms2_res.second);
 						}
-						// 向左继续找
+
 						right_t++;
 					}
 					else {
 						break;
 					}
 				}
-				// 更新left和library_left ++++++++++++++++++++++++++++++++++++++ // 重要！！！
+	
 				left = left_t + 1;
 				library_left = left_t + 1;
-				break; // 找完左边和右边的，跳出这个while
+				break; 
 			}
 			else if (sample_mz <= m_library[mid].GetMinMz()) {
 				right = mid - 1;
@@ -211,50 +210,50 @@ void Comparator::Compare()
 			}
 		}
 
-		// 如果两个sample是一样的，那么只需要进行一次比较就好了
+
 		if (sample_left == sample_right) {
 			break;
 		}
-		// 如果left已经超过了库的索引，说明这个sample的mz已经大于库最大的mz了，则退出
+
 		else if (left > int(m_library.size() - 1)) {
 			break;
 		}
 
-		// 如果sample_left在库中无法找到，则更新library_left为left
+
 		if (!find_sample_left) {
 			library_left = left;
 		}
 
-		// 复原right，left不用复原
+
 		right = library_right;
 
 
-		// 用sample_right遍历library
+
 		while (left <= right) {
 			int mid = (left + right) / 2;
 			double sample_mz = m_sample[sample_right].GetMz();
-			// 如果满足条件
+
 			if (sample_mz >= m_library[mid].GetMinMz() && sample_mz <= m_library[mid].GetMaxMz()) {
-				// 说明找到了
+
 				find_sample_right = 1;
-				// 比较两个二级
+
 				auto compare_ms2_res = CompareMS2(m_sample[sample_right].GetMS2(), m_library[mid].GetMS2());
-				// 加入到结果中
+
 				if (compare_ms2_res.first != 0 && compare_ms2_res.second != 0) {
 					m_compare_res.AddResult(m_sample[sample_right], m_library[mid], compare_ms2_res.first, compare_ms2_res.second);
 				}
-				// 向左和右继续寻找
+
 				int left_t = mid - 1;
 				int right_t = mid + 1;
 				while (left_t >= 0) {
 					if (m_library[left_t].GetMinMz() <= sample_mz && sample_mz <= m_library[left_t].GetMaxMz()) {
-						// 比较两个二级
+
 						compare_ms2_res = CompareMS2(m_sample[sample_right].GetMS2(), m_library[left_t].GetMS2());
-						// 加入到结果中
+
 						if (compare_ms2_res.first != 0 && compare_ms2_res.second != 0) {
 							m_compare_res.AddResult(m_sample[sample_right], m_library[left_t], compare_ms2_res.first, compare_ms2_res.second);
 						}
-						// 向左继续找
+
 						left_t--;
 					}
 					else {
@@ -264,22 +263,22 @@ void Comparator::Compare()
 
 				while (right_t <= int(m_library.size() - 1)) {
 					if (m_library[right_t].GetMinMz() <= sample_mz && sample_mz <= m_library[right_t].GetMaxMz()) {
-						// 比较两个二级
+
 						compare_ms2_res = CompareMS2(m_sample[sample_right].GetMS2(), m_library[right_t].GetMS2());
-						// 加入到结果中
+
 						if (compare_ms2_res.first != 0 && compare_ms2_res.second != 0) {
 							m_compare_res.AddResult(m_sample[sample_right], m_library[right_t], compare_ms2_res.first, compare_ms2_res.second);
 						}
-						// 向左继续找
+
 						right_t++;
 					}
 					else {
 						break;
 					}
 				}
-				// 更新library_right ++++++++++++++++++++++++++++++++++++++ // 重要！！！
+
 				library_right = right_t - 1;
-				break; // 找完左边和右边的，跳出这个while
+				break; 
 			}
 			else if (sample_mz <= m_library[mid].GetMinMz()) {
 				right = mid - 1;
@@ -289,12 +288,12 @@ void Comparator::Compare()
 			}
 		}
 
-		// 如果sample_right在库中无法找到，则更新library_right为right
+
 		if (!find_sample_right) {
 			library_right = right;
 		}
 
-		// 移动指针
+
 		sample_left++;
 		sample_right--;
 	}
@@ -320,7 +319,7 @@ void Comparator::Test()
 	MS2 ms2_5({ 300,400 }, { 999,50 }, "test2", 30);
 	MS2 ms2_6({ 500,600 }, { 999,50 }, "test3", 30);
 
-	// sample
+
 	CombineSpectrum sample_1(100, 100, 100, move(ms2_1), 5, "100");
 	CombineSpectrum sample_2(200, 200, 200, move(ms2_2), 5, "200");
 	CombineSpectrum sample_3(300, 300, 300, move(ms2_3), 5, "300");
@@ -329,7 +328,7 @@ void Comparator::Test()
 	m_sample.push_back(sample_2);
 	m_sample.push_back(sample_3);
 
-	// library
+
 	CombineSpectrum library_1(100, 100, 100, move(ms2_4), 5, "100");
 	CombineSpectrum library_2(200, 200, 200, move(ms2_5), 5, "200");
 	CombineSpectrum library_3(300, 300, 300, move(ms2_6), 5, "300");
@@ -338,7 +337,7 @@ void Comparator::Test()
 	m_library.push_back(library_2);
 	m_library.push_back(library_3);
 
-	// 进行比较
+
 	this->Compare();
 
 	this->m_compare_res.Print();
@@ -358,15 +357,15 @@ int Comparator::GetLibrarySize()
 
 std::pair<double, double> CompareMS2(MS2& sample_ms2, MS2& library_ms2)
 {
-	// 二分查找,library_ms2的min_mz和max_mz需要已经排序好
+
 	vector<double>& library_min_mz = library_ms2.GetMinMz();
 	vector<double>& library_max_mz = library_ms2.GetMaxMz();
 	vector<double>& library_mz = library_ms2.GetMz();
 
-	// 用于去重
+
 	unordered_map<double, int> m_hash_map;
 
-	// first存储score1，second存储score2
+
 	pair<double, double> res;
 
 
@@ -377,17 +376,17 @@ std::pair<double, double> CompareMS2(MS2& sample_ms2, MS2& library_ms2)
 		while (left <= right) {
 			int mid = (left + right) / 2;
 			if (library_min_mz.at(mid) <= *(itr) && *(itr) <= library_max_mz.at(mid)) {
-				// 寻找这个理论库的这个碎片是否被匹配过
+
 				auto find_itr = m_hash_map.find(library_mz.at(mid));
-				// 如果未被匹配过,将理论库的mz作为键，样本匹配上的碎片的位置存入哈希表
+
 				if (find_itr == m_hash_map.end()) {
 					m_hash_map[library_mz.at(mid)] = itr - sample_ms2.m_mz.begin();
 				}
 				else {
-					// 计算上一个匹配的diff和新匹配上的diff
+
 					double origin_dif = abs(find_itr->first - sample_ms2.m_mz.at(find_itr->second));
 					double new_diff = abs(find_itr->first - (*itr));
-					// 如果新的diff比上一次匹配的diff小，则更新哈希表对应的值
+
 					if (new_diff <= origin_dif) {
 						m_hash_map[find_itr->first] = itr - sample_ms2.m_mz.begin();
 					}
@@ -406,13 +405,13 @@ std::pair<double, double> CompareMS2(MS2& sample_ms2, MS2& library_ms2)
 	double score1 = 0;
 	double score2 = 0;
 
-	// 计算score1
+
 	for (auto itr = m_hash_map.begin(); itr != m_hash_map.end(); itr++) {
 		score2 += sample_ms2.m_intensity.at(itr->second);
 	}
 	score2 = score2 / sample_ms2.m_total_intensity;
 
-	// 计算score2
+
 	score1 = double(m_hash_map.size()) / library_mz.size();
 
 	res.first = score1;
@@ -422,28 +421,28 @@ std::pair<double, double> CompareMS2(MS2& sample_ms2, MS2& library_ms2)
 
 void Load(Comparator* m_comparator, Rcpp::List& sample_List, std::vector<double>& library_mz, double ms1_ppm, double ms2_ppm, Rcpp::List& library_list)
 {
-	// 预分配内存
+
 	m_comparator->m_sample.reserve(sample_List.size());
 	m_comparator->m_library.reserve(library_list.size());
 
 	clock_t start, end;
 	start = clock();
-	// 载入sample
+
 	for (int i = 0; i < sample_List.size(); i++) {
 		Rcpp::List single_List = sample_List.at(i);
 		double precursor_mz = single_List["PrecursorMZ"];
 		double precursor_intensity = single_List["PrecursorIntensity"];
 		double rt = single_List["rt"];
 		string index = single_List["num"];
-		// 获取二级那个数据框
+
 		Rcpp::List ms2_List = single_List["MS2mz"];
 		vector<double> ms2_mz = ms2_List["da.temp.mz"];
 		vector<double> ms2_intensity = ms2_List["da.temp.intensity"];
 
-		// 二级
+
 		MS2 this_ms2(move(ms2_mz), move(ms2_intensity), "", ms2_ppm);
 
-		// 加入到样本向量中
+
 		m_comparator->m_sample.emplace_back(CombineSpectrum(precursor_mz, precursor_intensity, rt, move(this_ms2), ms1_ppm, move(index)));
 	}
 	end = clock();
@@ -451,21 +450,21 @@ void Load(Comparator* m_comparator, Rcpp::List& sample_List, std::vector<double>
 
 
 	start = clock();
-	// 载入library
+
 	for (int i = 0; i < library_mz.size(); i++) {
 		Rcpp::List single_List = library_list.at(i);
 		string info = single_List["inf"];
 
-		// 获取二级那个数据框
+
 		Rcpp::List ms2_List = single_List["ms2.spe"];
 
 		vector<double> ms2_mz = ms2_List["mz"];
 		vector<double> ms2_intensity = ms2_List["intensity"];
 
-		// 二级
+
 		MS2 this_ms2(move(ms2_mz), move(ms2_intensity), move(info), ms2_ppm);
 
-		// 加入到library向量中
+
 		m_comparator->m_library.emplace_back(CombineSpectrum(library_mz[i], 0, 0, move(this_ms2), ms1_ppm, ""));
 	}
 	end = clock();
@@ -474,27 +473,27 @@ void Load(Comparator* m_comparator, Rcpp::List& sample_List, std::vector<double>
 
 void Load2(Comparator* m_comparator, Rcpp::List& sample_List, double ms1_ppm, double ms2_ppm)
 {
-  // 预分配内存
+
   m_comparator->m_sample.reserve(sample_List.size());
   
   clock_t start, end;
   start = clock();
-  // 载入sample
+
   for (int i = 0; i < sample_List.size(); i++) {
     Rcpp::List single_List = sample_List.at(i);
     double precursor_mz = single_List["PrecursorMZ"];
     double precursor_intensity = single_List["PrecursorIntensity"];
     double rt = single_List["rt"];
     string index = single_List["num"];
-    // 获取二级那个数据框
+
     Rcpp::List ms2_List = single_List["MS2mz"];
     vector<double> ms2_mz = ms2_List["da.temp.mz"];
     vector<double> ms2_intensity = ms2_List["da.temp.intensity"];
     
-    // 二级
+
     MS2 this_ms2(move(ms2_mz), move(ms2_intensity), "", ms2_ppm);
     
-    // 加入到样本向量中
+
     m_comparator->m_sample.emplace_back(CombineSpectrum(precursor_mz, precursor_intensity, rt, move(this_ms2), ms1_ppm, move(index)));
   }
   end = clock();
@@ -551,9 +550,9 @@ void CompareResult::Print()
 
 void CompareResult::OutputCsv(std::string output_path)
 {
-	// 输出的csv文件
+
 	ofstream dataFile(output_path);
-	// 头部
+
 	dataFile << "index"
 		<< ","
 		<< "mz"
@@ -568,7 +567,7 @@ void CompareResult::OutputCsv(std::string output_path)
 		<< ","
 		<< "score2" << endl;
 
-	// output
+
 	for (int i = 0; i < m_sample.size(); i++) {
 		dataFile << m_sample[i]->GetIndex() << "," << m_sample[i]->GetMz() << "," << m_sample[i]->GetRt() << "," << m_sample[i]->GetIntensity() << ",";
 		dataFile << m_library[i]->GetMS2().GetInfo() << ",";
