@@ -16,7 +16,7 @@ public:
 	MS2();
 	MS2(std::vector<double>&& mz, std::vector<double>&& intensity, std::string&& info, int ppm);
 public:
-	// 友元函数
+
 	friend std::pair<double, double> CompareMS2(MS2& sample_ms2, MS2& library_ms2);
 public:
 	std::vector<double>& GetMz();
@@ -81,17 +81,17 @@ public:
 	int GetSampleSize();
 	int GetLibrarySize();
 public:
-	// 需要按照mz排序好
+
 	std::vector<CombineSpectrum> m_sample;
 	std::vector<CombineSpectrum> m_library;
 	CompareResult m_compare_res;
 };
 
-// 比较两个二级
+
 std::pair<double, double> CompareMS2(MS2& sample_ms2, MS2& library_ms2);
 
-// 加载数据
+
 void Load(Comparator* m_comparator, Rcpp::List& sample_List, std::vector<double>& library_mz, double ms1_ppm, double ms2_ppm, Rcpp::List& library_list);
 
-// 输出csv文件
+
 void OutputCsv(Comparator* m_comparator, std::string output_path);
