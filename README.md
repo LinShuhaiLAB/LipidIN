@@ -10,7 +10,7 @@ Features
         
 `Mass Spectrometry Peak Processing Module:`Utilizes existing R packages to process mass spectrometry data in mzML format.
         
-`Expeditious querying module (EQ) Module:`Performs secondary matching with theoretical or real mass spectrometry libraries and normalizes the matching results.
+`Expeditious querying (EQ) Module:`Performs secondary matching with theoretical or real mass spectrometry libraries and normalizes the matching results.
 
 `The Lipid Categories Intelligence (LCI) Module:`Based on the relative position of primary information, it conducts heuristic searches using secondary matching scores as prior information to re-evaluate high-score matches.
 
