@@ -117,14 +117,14 @@ In all testing, we used MS-DIAL version v4.9.221218 and LipidSearch V4.2. All eq
 - Operating System: Windows
 - Compilation Environment
 ```
-"All required packages need install in R code."
+Packages need in R code.
 > library(this.path)
 > library(RaMS)
 > library(parallel)
 > library(doParallel)
 > library(Rcpp)
 > library(tidyverse)
-"All required packages need install in python code."
+Requirements need in python code."
   import os
   import glob
   import torch
