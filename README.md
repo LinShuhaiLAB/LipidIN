@@ -145,7 +145,7 @@ Requirements need in python code."
 - Estimated Time for Each Module
 ```
   In the R code：
-      Batch realization of converting mzML to rda cost time approximately 1.698975 mins
-      EQ module cost time approximately 2.349557 mins
-      LCI module cost time approximately 1.624023 mins
+      Batch realization of converting mzML to rda cost time approximately 1.69 mins
+      EQ module cost time approximately 2.34 mins (<0.1s for querying and 2.3 mins for data preprocssing of LCI)
+      LCI module cost time approximately 1.62 mins
 ```
