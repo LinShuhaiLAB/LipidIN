@@ -124,6 +124,20 @@ In all testing, we used MS-DIAL version v4.9.221218 and LipidSearch V4.2. All eq
 > library(Rcpp)
 > library(tidyverse)
 "All required packages need install in python code."
+  import os
+  import glob
+  import torch
+  import torch.nn as nn
+  import torch.optim as optim
+  import pandas as pd
+  import random
+  import numpy as np
 - Hardware Requirements: (RAM > 16GB)
 - Estimated Time for Installing Required Packages
-- Estimated Time for Each Module (as listed in the demo's txt file)
+  The R code for installing packages takes approximately 10 minutes, depending on individual network conditions.
+  The python code for installing requirements takes approximately 10 minutes, depending on individual network conditions.
+- Estimated Time for Each Module 
+  In the R code：
+      Batch realization of converting mzML to rda cost time approximately 1.698975 mins
+      EQ module cost time approximately 2.349557 mins
+      LCI module cost time approximately 1.624023 mins
