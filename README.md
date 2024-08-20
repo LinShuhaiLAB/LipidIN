@@ -107,3 +107,15 @@ if __name__ == "__main__":
 # If you need batch processing, please name the corresponding files in the following format, for example, `aaa.csv` with `aaa_GT.csv` ; `bbb.csv` with `bbb_GT.csv`.
 # We provide the demo directory, meanwhile, You can use more data. 
 ```
+Requirements
+---
+All benchmark tests were performed on a personal computer with 13th Gen Intel® Core™ i7-13700F × 16- Core Processor, 64 GB memory, and installed with Windows11 operation system , R-4.2.3 and Python v.3.9 including packages XCMS (v 4.2.2), RaMS (v 1.4.0), parallel (v 3.6.2), doParallel (version 1.0.17), Rcpp (1.0.11), tidyverse (v 1.3.0), WGCNA (v 1.7.0-3), statTarget (v 1.34.0), lightgbm (v 4.5.0), pandas (v 2.0.3.), numpy( v 1.23.5), torch (1.13.1+cu116).
+MS entropy and Flash entropy download from Github at https://github.com/YuanyueLi/SpectralEntropy, and https://github.com/YuanyueLi/FlashEntropySearch.
+LipidMatch was downloaded from https://github.com/GarrettLab-UF/LipidMatch. 
+In all testing, we used MS-DIAL version v4.9.221218 and LipidSearch V4.2. All equations for LipidIN for MS/MS notation and fingerprint regenerating are given in the Methods. Code for clinical cohort analysis  can be access at https://github.com/LinShuhaiLAB/LipidIN/clinical cohort analysis.
+
+- Operating System: Windows
+- Compilation Environment
+- Hardware Requirements: (RAM > 16GB)
+- Estimated Time for Installing Required Packages
+- Estimated Time for Each Module (as listed in the demo's txt file)
