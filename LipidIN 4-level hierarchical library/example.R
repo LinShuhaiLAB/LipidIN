@@ -1,3 +1,4 @@
+# Input parameter ----------------------------------------
 FN <- 'D:/Draw/LipidIN 4-level hierarchical library/demo neg CH3COO'
 pt <- 'D:/Draw/LipidIN 4-level hierarchical library'
 MS2_filter <- 0.10             
