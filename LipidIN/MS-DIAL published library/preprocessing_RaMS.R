@@ -1,21 +1,4 @@
 preprocessing_RaMS <- function(FN1,ESImode,MS2_filter){
-  packages <- c('this.path','parallel','doParallel','RaMS','Rcpp','tidyverse')
-  installed_packages <- packages %in% rownames(installed.packages())
-  if(all(installed_packages)){
-    print("All required packages are installed.")
-  } else{
-    print("The following packages are missing:")
-    print(packages[!installed_packages])
-    
-
-    install.packages(packages[!installed_packages])
-  }
-  library(this.path)
-  library(RaMS)
-  library(parallel)
-  library(doParallel)
-  library(Rcpp)
-  library(tidyverse)
   cat("\033[32mgrabMzmlData reading MS2!\n\033[0m")
   a <- grabMzmlData(FN1,grab_what=c("MS2"))
   a <- a$MS2

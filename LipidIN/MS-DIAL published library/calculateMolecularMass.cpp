@@ -1,12 +1,12 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-
+// [[Rcpp::export]]
 NumericVector calculateMolecularMass(CharacterVector formulas) {
   int n = formulas.size();
   NumericVector masses(n);
   
-
+  // Map of element symbols to atomic masses
   std::map<std::string, double> atomicMasses = {
     {"H", 1.007825032},
     {"C", 12},
@@ -26,18 +26,18 @@ NumericVector calculateMolecularMass(CharacterVector formulas) {
     for (size_t j = 0; j < formula.length(); j++) {
       char c = formula[j];
       
-      if (std::isalpha(c)) {
-        std::string symbol(1, std::toupper(c));
+      if (std::isalpha(c)) {// 判断是否字符
+        std::string symbol(1, std::toupper(c));// 将其转大写
         mass += atomicMasses[symbol] * multiplier;
         digit = atomicMasses[symbol];
         multiplier = 1.0;
       } 
-      if (std::isdigit(c)) {
-        int multiplier = c - '0';
-
+      if (std::isdigit(c)) {// 判断是否数字
+        int multiplier = c - '0';// 转换为数字
+        // 判断下一个是不是也是数字
         char cc = formula[j + 1];
         if (j +1 < formula.length() && std::isdigit(cc)) {
-          int multiplierd = formula[j + 1] - '0';
+          int multiplierd = formula[j + 1] - '0';// 转换为数字,个位
           multiplier = 10.0 * multiplier + multiplierd;
           j++;
         }

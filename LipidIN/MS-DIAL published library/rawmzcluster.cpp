@@ -1,6 +1,6 @@
 #include <Rcpp.h>
 using namespace Rcpp;
-
+// [[Rcpp::export]]
 IntegerVector rtcluster(const IntegerVector& X, const NumericVector& rt, double error) {
   int n = rt.size();
   IntegerVector clusters(n);
@@ -28,19 +28,20 @@ IntegerVector rtcluster(const IntegerVector& X, const NumericVector& rt, double 
 
 #include <Rcpp.h>
 using namespace Rcpp;
-
+// [[Rcpp::export]]
 NumericVector propscale(const IntegerVector& labels, const NumericVector& values) {
   int n = labels.size();
   NumericVector normalizedValues(n);
   
-
+  // 在labels向量中查找唯一标签
   IntegerVector uniqueLabels = Rcpp::unique(labels);
   int numLabels = uniqueLabels.size();
   
-
+  // 对每个唯一标签进行归一化
   for(int i = 0; i < numLabels; i++) {
     int label = uniqueLabels[i];
-
+    
+    // 找到属于当前标签的所有数值
     NumericVector currentValues;
     for(int j = 0; j < n; j++) {
       if(labels[j] == label) {
@@ -48,10 +49,11 @@ NumericVector propscale(const IntegerVector& labels, const NumericVector& values
       }
     }
     
-
+    // 计算当前数值的最小值和最大值
     double minValue = Rcpp::min(currentValues);
     double maxValue = Rcpp::max(currentValues);
-
+    
+    // 归一化当前标签下的数值
     for(int j = 0; j < n; j++) {
       if(labels[j] == label) {
         double normalizedValue = (values[j] - minValue) / (maxValue - minValue);
@@ -66,7 +68,7 @@ NumericVector propscale(const IntegerVector& labels, const NumericVector& values
 #include <Rcpp.h>
 using namespace Rcpp;
 
-
+// [[Rcpp::export]]
 IntegerVector rawmzcluster(const IntegerVector& X, const NumericVector& rawmz, double error) {
   int n = rawmz.size();
   IntegerVector clusters(n);
