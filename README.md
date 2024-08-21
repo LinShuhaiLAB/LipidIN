@@ -22,7 +22,7 @@ The system  main development languages being R，python and C++. While R ,python
 
 Modules Description and Usage Instructions (LipidIN 4-level hierarchical library)
 ---
-We provide the demo which named demo neg CH3COO under LipidIN/LipidIN 4-level hierarchical library
+We provide the demo which named demo neg CH3COO under LipidIN/LipidIN 4-level hierarchical library, due to github file size limitations, you can find the demos as well as the graded library files neg_ALL.rda and pos_ALL.rda in the webpage Zenodo (https://zenodo.org/records/13350719).
 This task involves searching a 4-level hierarchical library, which is efficient in terms of querying. However, the data format conversion process for the LCI module takes approximately 2 minutes.
 To start, locate the file "example.R" within the "LipidIN/LipidIN 4-level hierarchical library" directory. Open this file and modify the relevant parameters as needed. Once you've made the necessary changes to the "example.R" file, select the entire code within the file. Then, click the "Run" button to execute the code.
 ```
@@ -44,7 +44,7 @@ ESI <- 'n2'
 
 Modules Description and Usage Instructions (LipidIN MS-DIAL published library)
 ---
-We provide the demo which named demo of LipidIN under LipidIN/LipidIN MS-DIAL published library
+We provide the demo which named demo of LipidIN under LipidIN/LipidIN MS-DIAL published library, due to github file size limitations, you can find the demos as well as the graded library files MS1_MS2_library.rda in the webpage Zenodo (https://zenodo.org/records/13350719).
 
 ```
 ##### data preprocessing Using 'RaMS' package #####
