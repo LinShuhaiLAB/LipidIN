@@ -44,7 +44,7 @@ ESI <- 'n2'
 
 Modules Description and Usage Instructions (LipidIN MS-DIAL published library)
 ---
-We provide the demo which named demo of LipidIN under LipidIN/MS-DIAL published library 
+We provide the demo which named demo of LipidIN under LipidIN/LipidIN MS-DIAL published library
 
 ```
 ##### data preprocessing Using 'RaMS' package #####
