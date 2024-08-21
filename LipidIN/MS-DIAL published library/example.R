@@ -1,9 +1,27 @@
+# Preparation and installation packages ----------------------------------------
+packages <- c('this.path','parallel','doParallel','RaMS','Rcpp','tidyverse')
+installed_packages <- packages %in% rownames(installed.packages())
+if(all(installed_packages)){
+  print("All required packages are installed.")
+} else{
+  print("The following packages are missing:")
+  print(packages[!installed_packages])
+  
+  # Install the missing packages
+  install.packages(packages[!installed_packages])
+}
+library(this.path)
+library(RaMS)
+library(parallel)
+library(doParallel)
+library(Rcpp)
+library(tidyverse)
 ##### data preprocessing Using 'RaMS' package #####
 source(paste(getwd(),'/preprocessing_RaMS.r',sep=''))
 env <- new.env()
 # example
 a <- Sys.time()
-filename <- 'I:/LipidIN MS-DIAL published library/demo of LipidIN/QCL_NEG_ID_1.mzML'
+filename <- 'D:/Draw/LipidIN MS-DIAL published library/demo of LipidIN/QCL_NEG_ID_1.mzML'
 ESI <- 'n2'
 MS2_filter <- 0.10
 preprocessing_RaMS(filename,ESI,MS2_filter)
@@ -20,7 +38,7 @@ source(paste(getwd(),'/preprocessing_RaMS_nomultithread.r',sep=''))
 env <- new.env()
 # example
 a <- Sys.time()
-filename <- 'I:/LipidIN MS-DIAL published library/demo of LipidIN/QCL_NEG_ID_1.mzML'
+filename <- 'D:/Draw/LipidIN MS-DIAL published library/demo of LipidIN/QCL_NEG_ID_1.mzML'
 ESI <- 'n2'
 MS2_filter <- 0.10
 preprocessing_RaMS_nomultithread(filename,ESI,MS2_filter)
@@ -37,7 +55,7 @@ load(paste(getwd(),'/MS1_MS2_library.rda',sep=''))
 # example
 a <- Sys.time()
 source(paste(getwd(),'/EQ.r',sep=''))
-filename <- 'I:/LipidIN MS-DIAL published library/demo of LipidIN/QCL_NEG_ID_1_treated.rda'
+filename <- 'D:/Draw/LipidIN MS-DIAL published library/demo of LipidIN/QCL_NEG_ID_1.mzML'
 ppm1 <- 5
 ppm2 <- 10
 ESI <- 'n2'
@@ -56,7 +74,7 @@ source(paste(getwd(),'/LCI.r',sep=''))
 env <- new.env()
 # example
 a <- Sys.time()
-filename <- 'I:/LipidIN MS-DIAL published library/demo of LipidIN/QCL_NEG_ID_1_treated.rda'
+filename <- 'D:/Draw/LipidIN MS-DIAL published library/demo of LipidIN/QCL_NEG_ID_1.mzML'
 LCI(filename)
 Sys.time()-a
 # filename: Location of .rda file output by data preprocessing, for example '.../demo pos/QC_POS1.rda'.
@@ -67,7 +85,7 @@ source(paste(getwd(),'/LCI_nomultithread.r',sep=''))
 env <- new.env()
 # example
 a <- Sys.time()
-filename <- 'I:/LipidIN MS-DIAL published library/demo of LipidIN/QCL_NEG_ID_1_treated.rda'
+filename <- 'D:/Draw/LipidIN MS-DIAL published library/demo of LipidIN/QCL_NEG_ID_1.mzML'
 LCI_nomultithread(filename)
 Sys.time()-a
 # filename: Location of .rda file output by data preprocessing, for example '.../demo pos/QC_POS1.rda'.
