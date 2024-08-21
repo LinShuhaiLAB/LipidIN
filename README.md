@@ -20,10 +20,31 @@ System Architecture
 ---
 The system  main development languages being R，python and C++. While R ,python handles backend processes and C++ accelerates the program. The software employs greedy secondary matching algorithms, heuristic search algorithms, and prior information-based spectrum enhancement algorithms for mass spectrometry analysis, outputting the identification results in CSV format.Using the model to generate reverse lipid fingerprint spectrograms, independent of sample matrices, instruments.
 
-Modules Description and Usage Instructions
+Modules Description and Usage Instructions (LipidIN 4-level hierarchical library)
 ---
+We provide the demo which named demo neg CH3COO under LipidIN/LipidIN 4-level hierarchical library
+This task involves searching a 4-level hierarchical library, which is efficient in terms of querying. However, the data format conversion process for the LCI module takes approximately 2 minutes.
+To start, locate the file "example.R" within the "LipidIN/LipidIN 4-level hierarchical library" directory. Open this file and modify the relevant parameters as needed. Once you've made the necessary changes to the "example.R" file, select the entire code within the file. Then, click the "Run" button to execute the code.
+```
+##### Parameter Input #####
+FN <- 'I:/LipidIN 4-level hierarchical library/demo neg CH3COO'
+pt <- 'I:/LipidIN 4-level hierarchical library'
+MS2_filter <- 0.10             
+ppm1 <- 5                    
+ppm2 <- 10                      
+ESI <- 'n2' 
+# FN: Address of the *.mzML file to be tested.
+# pt: Support code (EQ.cpp, LCI.R, etc.) address.
+# filename: Location of .mzML file, for example '.../demo pos/QC_POS1.mzML'.
+# ESI: 'p' for positive ionization mode，
+#      ‘n1’ for negative ionization mode [M+COOH]-，
+#      'n2' for negative ionization mode [M+CH3COO]-.
+# MS2_filter: a value of 0-1, MS2 fragments with intensity lower than the MS2_filter*max intensity will be deleted
+```
 
-We provide the demo which named demo of LipidIN (without .mzML) under LipidIN/MS-DIAL published library 
+Modules Description and Usage Instructions (LipidIN MS-DIAL published library)
+---
+We provide the demo which named demo of LipidIN under LipidIN/MS-DIAL published library 
 
 ```
 ##### data preprocessing Using 'RaMS' package #####
