@@ -159,7 +159,7 @@ Requirements need in python code."
   import random
   import numpy as np
 ```
-- Hardware Requirements: (RAM > 16GB)
+- Hardware Requirements: (LipidIN 4-level hierarchical library require RAM >= 16GB, LipidIN MS-DIAL published library has no special requires.)
 - Estimated Time for Installing Required Packages
 ```
   The R code for installing packages takes approximately 10 minutes, depending on individual network conditions.
