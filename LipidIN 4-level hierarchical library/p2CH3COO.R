@@ -424,6 +424,7 @@ all_search <- function(bp.point, other.point,target.function.tolerance) {
   return(mm)
 }
 part2 <- function(FNIII){
+  # FNIII <- FN1[1]
   cat("\033[32m",paste('Match files ',FNIII,sep=''),"\n\033[0m")
   load(FNIII)
   sample_mz <- purrr::map(.x=neg.list, .f=function(x){
@@ -447,81 +448,22 @@ part2 <- function(FNIII){
   compare$OutputCsv(paste(gsub('.rda','',FNIII),'_NPG_5ppm.csv',sep=''))
   # result processed --------------------------------------------------------
   cat("\033[32m",paste('Result processed ',FNIII,sep=''),"\n\033[0m")
-  da <- read.csv(paste(gsub('.rda','',FNIII),'_NPG_5ppm.csv',sep=''))
-  colnames(da) <- c('Peak.num','mz','rt','intensity',
-                    'title','score.match','score.ratio')
-  da <- da[which(da$score.match>=0.5),]
+  process_file(paste(gsub('.rda','',FNIII),'_NPG_5ppm.csv',sep=''))
+  da <- read.csv(paste(gsub('.rda','',FNIII),'_NPG_5ppm_processed.csv',sep=''))
+  colnames(da) <- c('Peak.num','mz','rt','intensity','title','score.match','score.ratio')
   if(length(grep('HCOO',da$title))!=0){
     da <- da[-grep('HCOO',da$title),]
   }
-  output <- da
-  d.temp <- output
-  d.temp <- separate(d.temp,title,c('t','title'),sep='DB#: ')
-  d.temp <- subset(d.temp,select=-t)
-  d.temp <- separate(d.temp, title, c('level','title'), sep = '_DES_')
+  d.temp <- da
   d.temp <- separate(d.temp, title, c('title', 'other'), sep = '-Fomula-')
   d.temp <- separate(d.temp, other, c('Fomula', 'CCS'), sep = '-CCS-')
   d.temp <- separate(d.temp, CCS, c('CCS', 'Adduct'), sep = '-Add-')
-  da <- d.temp
-  dn1 <- da[which(da$level=='LEVEL1'),]$title
-  dn2 <- da[which(da$level=='LEVEL2'),]$title
-  dn3 <- da[which(da$level=='LEVEL3'),]$title
-  dn4 <- da[which(da$level=='LEVEL4'),]$title
-  dn_all <- unique(intersect(c(dn1,dn3),c(dn2,dn4)))
-  da <- da[which(da$title%in%dn_all),]
-  da$t_a <- paste(da$title,da$mz,da$rt)
-  da1 <- unique(da$t_a)
-  library(parallel)
-  library(doParallel)
-  func <- function(da1_leli){
-    da11 <- da[which(da$t_a==da1_leli),]
-    lel1.s <- da11[which(da11$level=='LEVEL1'),'score.match']
-    lel1.i <- da11[which(da11$level=='LEVEL1'),'score.ratio']
-    lel2.s <- da11[which(da11$level=='LEVEL2'),'score.match']
-    lel2.i <- da11[which(da11$level=='LEVEL2'),'score.ratio']
-    lel3.s <- da11[which(da11$level=='LEVEL3'),'score.match']
-    lel3.i <- da11[which(da11$level=='LEVEL3'),'score.ratio']
-    lel4.s <- da11[which(da11$level=='LEVEL4'),'score.match']
-    lel4.i <- da11[which(da11$level=='LEVEL4'),'score.ratio']
-    if(length(lel1.s)==0){
-      lel1.s <- 0
-      lel1.i <- 0
-    }
-    if(length(lel2.s)==0){
-      lel2.s <- 0
-      lel2.i <- 0
-    }
-    if(length(lel3.s)==0){
-      lel3.s <- 0
-      lel3.i <- 0
-    }
-    if(length(lel4.s)==0){
-      lel4.s <- 0
-      lel4.i <- 0
-    }
-    aa1 <- max(lel1.s,lel3.s)
-    aa2 <- max(lel2.s,lel4.s)
-    if(aa1>=0.1&aa2>=0.1){
-      op <- da11[1,]
-      op$score.match <- sum(aa1,aa2)/2
-      op$score.ratio <- sum(lel1.i,lel2.i,lel3.i,lel4.i)/4
-      return(op)
-    }
-  }
-  cl <- makeCluster(detectCores())
-  registerDoParallel(cl)
-  assign("da",da,envir=env)
-  clusterExport(cl,"env") 
-  # clusterExport(cl,"da") 
-  da2 <- parLapply(cl,da1,func)
-  stopCluster(cl)
-  da2 <- do.call(rbind,da2)
+  da2 <- d.temp
   da2$Tmz <- 0
   da2$Tmz <- do.call(c,lapply(1:nrow(da2),function(cm){
     calMS2(da2[cm,]$Fomula)
   }))
-  da <- da2[which(da2$score.match>=0.5),]
-  da <- da[,-5]
+  da <- da2[,-4]
   da <- da[!duplicated(da[,c(2,3,5)]),]
   write.csv(da,paste(gsub('.rda','',FNIII),'_NPG_processed.csv',sep=''))
 }

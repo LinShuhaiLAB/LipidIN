@@ -1677,7 +1677,7 @@ LCI <- function(FNIII){
   d <- d %>% group_by(Title) %>% top_n(1,final.score)
   d <- d[,c("peak.num","subclass","Title","mz","rt","Adduct","MS2.score1",
             "MS2.score2","rule1.score.Stand","rule2.score.Stand","final.score")]
-  file.remove(Fk[-grep('.rda',Fk)])
+  # file.remove(Fk[-grep('.rda',Fk)])
   d$top_n <- 'Top > 3'
   d1 <- d %>% group_by(peak.num) %>% top_n(3,final.score)
   d[which(d$Title%in%d1$Title),]$top_n <- 'Top 3'
