@@ -12,7 +12,7 @@ Added: EQ_support.cpp file and new demos.
 
 Updated: LCI.R; p2.R; p2CH3COO.R; p2COOH.R; example.R
 
-Fixed: Solve the long time consuming problem of Result processed in EQ module; Solve the problem of accidental file deletion in LCI module when running multiple files.
+Fixed: (1) Resolved the prolonged processing time issue in the EQ module; (2) Fixed the accidental file deletion problem in the LCI module when running multiple files simultaneously.
 
 Features
 ---
