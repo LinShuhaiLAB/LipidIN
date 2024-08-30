@@ -5,6 +5,13 @@ Introduction
 
 Improving annotation accuracy, coverage, speed and depth of lipid profiles remains a significant challenge in traditional spectral matching-based lipidomics. We introduce LipidIN, an advanced framework designed for comprehensive lipid annotation and reverse lipidomics. LipidIN features 166.3 million lipid fragmentation hierarchical library that encompass all potential chain compositions and carbon-carbon double bond locations. Developed expeditious querying module speeds up to around 70 billion times’ spectral querying in less than 1 second. Furthermore, we leverage three relative retention time rules to develop lipid categories intelligence model for reducing false positive annotations and predicting unannotated lipids with a 5.7% estimated false discovery rate coverage 8923 lipids cross various species. More importantly, LipidIN integrates a Wide-spectrum Modeling Yield network for regenerating lipid fingerprints to further improve coverage and accuracy with a 20% estimated recall boosting. The application of LipidIN in multiple tasks demonstrated reliability and potential for lipid annotation and biomarker discovery. 
 
+General Updates
+---
+
+Added: EQ_support.cpp file and new demos.
+Updated: LCI.R; p2.R; p2CH3COO.R; p2COOH.R; example.R
+Fixed: Solve the long time consuming problem of Result processed in EQ module; Solve the problem of accidental file deletion in LCI module when running multiple files.
+
 Features
 ---
         
