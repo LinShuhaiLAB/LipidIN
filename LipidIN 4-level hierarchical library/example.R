@@ -1,9 +1,9 @@
-FN <- 'D:/Draw/LipidIN 4-level hierarchical library/demo neg CH3COO'
-pt <- 'D:/Draw/LipidIN 4-level hierarchical library'
+FN <- 'D:/bio_inf/LipidIN 4-level hierarchical library/demo neg COOH'
+pt <- 'D:/bio_inf/LipidIN 4-level hierarchical library'
 MS2_filter <- 0.10             
 ppm1 <- 5                    
 ppm2 <- 10                      
-ESI <- 'n2' 
+ESI <- 'n1' 
 # FN: Address of the *.mzML file to be tested.
 # pt: Support code (EQ.cpp, LCI.R, etc.) address.
 # filename: Location of .mzML file, for example '.../demo pos/QC_POS1.mzML'.
@@ -32,6 +32,7 @@ library(Rcpp)
 library(tidyverse)
 source(paste(pt,'/p1.r',sep=''))
 sourceCpp(paste(pt,'/EQ.cpp',sep=''))
+sourceCpp(paste(pt,'/EQ_support.cpp',sep=''))
 sourceCpp(paste(pt,'/calculateMolecularMass.cpp',sep=''))
 sourceCpp(paste(pt,'/rawmzcluster.cpp',sep=''))
 sourceCpp(paste(pt,'/removeRowsWithinError.cpp',sep=''))
@@ -84,6 +85,11 @@ for(ii in FN1){
   LCI(paste(FN,'/',ii,sep=''))
 }
 Sys.time()-a
+setwd(FN)
+a <- list.files()
+b <- a[grep('.csv',a)]
+b <- b[-grep('final_output.csv',b)]
+file.remove(b)
 
 
 
