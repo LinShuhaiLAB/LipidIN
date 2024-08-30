@@ -8,6 +8,8 @@ Improving annotation accuracy, coverage, speed and depth of lipid profiles remai
 General Updates
 ---
 
+Update date: 30/8/2024
+
 Added: EQ_support.cpp file and new demos.
 
 Updated: LCI.R; p2.R; p2CH3COO.R; p2COOH.R; example.R
