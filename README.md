@@ -8,7 +8,7 @@ Improving annotation accuracy, coverage, speed and depth of lipid profiles remai
 General Updates
 ---
 
-Update date: 30/8/2024
+Last updated: August 30, 2024
 
 Added: EQ_support.cpp file and new demos.
 
