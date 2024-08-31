@@ -8,6 +8,14 @@ Improving annotation accuracy, coverage, speed and depth of lipid profiles remai
 General Updates
 ---
 
+Last updated: August 31, 2024
+
+Updated: p1.R; example.R
+
+Fixed: (1) Resolved the prolonged processing time issue in the converting *.mzML format to *.rda format.
+
+
+
 Last updated: August 30, 2024
 
 Added: EQ_support.cpp file and new demos.
@@ -179,7 +187,7 @@ Requirements need in python code."
 - Estimated Time for Each Module
 ```
   In the R code：
-      Batch realization of converting mzML to rda cost time approximately 1.69 mins
-      EQ module cost time approximately 2.34 mins (<0.1s for querying and 2.3 mins for data preprocssing of LCI)
+      Batch realization of converting mzML to rda cost time approximately 10 s
+      EQ module cost time approximately 12s (<0.1s for querying and 11 s for data preprocssing of LCI)
       LCI module cost time approximately 1.62 mins
 ```
