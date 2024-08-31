@@ -1,9 +1,9 @@
-FN <- 'D:/bio_inf/LipidIN 4-level hierarchical library/demo neg COOH'
-pt <- 'D:/bio_inf/LipidIN 4-level hierarchical library'
+FN <- 'D:/bio_inf/LipidIN/LipidIN 4-level hierarchical library v1.0.4/demo pos'
+pt <- 'D:/bio_inf/LipidIN/LipidIN 4-level hierarchical library v1.0.4'
 MS2_filter <- 0.10             
 ppm1 <- 5                    
 ppm2 <- 10                      
-ESI <- 'n1' 
+ESI <- 'p' 
 # FN: Address of the *.mzML file to be tested.
 # pt: Support code (EQ.cpp, LCI.R, etc.) address.
 # filename: Location of .mzML file, for example '.../demo pos/QC_POS1.mzML'.
@@ -13,7 +13,7 @@ ESI <- 'n1'
 # MS2_filter: a value of 0-1, MS2 fragments with intensity lower than the MS2_filter*max intensity will be deleted
 
 # Preparation and installation packages ----------------------------------------
-packages <- c('this.path','parallel','doParallel','RaMS','Rcpp','tidyverse')
+packages <- c('this.path','parallel','doParallel','RaMS','Rcpp','tidyverse','dplyr')
 installed_packages <- packages %in% rownames(installed.packages())
 if(all(installed_packages)){
   print("All required packages are installed.")
@@ -30,6 +30,7 @@ library(parallel)
 library(doParallel)
 library(Rcpp)
 library(tidyverse)
+library(dplyr)
 source(paste(pt,'/p1.r',sep=''))
 sourceCpp(paste(pt,'/EQ.cpp',sep=''))
 sourceCpp(paste(pt,'/EQ_support.cpp',sep=''))
