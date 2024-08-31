@@ -7,22 +7,24 @@ Improving annotation accuracy, coverage, speed and depth of lipid profiles remai
 
 General Updates
 ---
-
-`Last updated: August 31, 2024
+```
+Last updated: August 31, 2024
 
 Updated: p1.R; example.R
 
 Fixed: (1) Resolved the prolonged processing time issue in the converting *.mzML format to *.rda format.
+```
 
-
-
-`Last updated: August 30, 2024
+```
+Last updated: August 30, 2024
 
 Added: EQ_support.cpp file and new demos.
 
 Updated: LCI.R; p2.R; p2CH3COO.R; p2COOH.R; example.R
 
 Fixed: (1) Resolved the prolonged processing time issue in the EQ module; (2) Fixed the accidental file deletion problem in the LCI module when running multiple files simultaneously.
+```
+
 
 Features
 ---
