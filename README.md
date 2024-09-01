@@ -8,6 +8,12 @@ Improving annotation accuracy, coverage, speed and depth of lipid profiles remai
 General Updates
 ---
 ```
+Last updated: September 01, 2024
+
+Updated: pos_ALL.rda ()
+Fixed: (1) New added Osidizid Trilisered spectra.
+```
+```
 Last updated: August 31, 2024
 
 Updated: p1.R; example.R
