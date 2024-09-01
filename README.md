@@ -11,7 +11,7 @@ General Updates
 Last updated: September 01, 2024
 
 Updated: pos_ALL.rda ()
-Fixed: (1) New added Osidizid Trilisered spectra.
+Fixed: (1) New added Osidizid Trilisered (OxTG) spectra.
 ```
 ```
 Last updated: August 31, 2024
