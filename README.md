@@ -8,6 +8,13 @@ Improving annotation accuracy, coverage, speed and depth of lipid profiles remai
 General Updates
 ---
 ```
+Last updated: September 03, 2024
+
+Fixed: (1) Modify the LCI Module: Update the LCI module to resolve the issue of file accessibility in a multitasking environment;
+       (2) Correct pos_ALL Usage: Address and rectify errors related to the usage of pos_ALL.
+```
+
+```
 Last updated: September 01, 2024
 
 Updated: pos_ALL.rda ([10.5281/zenodo.13624125](https://zenodo.org/records/13624125))
