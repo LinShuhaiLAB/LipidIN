@@ -84,6 +84,7 @@ env <- new.env()
 for(ii in FN1){
   print(ii)
   LCI(paste(FN,'/',ii,sep=''))
+  setwd(pt)
 }
 Sys.time()-a
 setwd(FN)
