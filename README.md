@@ -10,8 +10,8 @@ General Updates
 ```
 Last updated: September 03, 2024
 
-Fixed: (1) Modify the LCI Module: Update the LCI module to resolve the issue of file accessibility in a multitasking environment;
-       (2) Correct pos_ALL Usage: Address and rectify errors related to the usage of pos_ALL.rda ([https://zenodo.org/records/13645234](https://zenodo.org/records/13645234)).
+Fixed: (1) Update the LCI module to resolve the issue of file accessibility in a multitasking environment;
+       (2) Address and rectify errors related to the usage of pos_ALL.rda ([https://zenodo.org/records/13645234](https://zenodo.org/records/13645234)).
 ```
 
 ```
