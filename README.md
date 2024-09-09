@@ -13,7 +13,7 @@ Last updated: September 09, 2024
 Updated: (1) New added Oxidized phosphatidylcholine (OxPC, O2xPC),
                        Oxidized phosphatidylglycerol (OxPG, O2xPG),
                        Oxidized phosphatidylinositol (OxPI, O2xPI),
-                       Oxidized phosphatidylserine (OxPS, O2xPS) spectra.
+                       Oxidized phosphatidylserine (OxPS, O2xPS) spectra (https://zenodo.org/records/13735639).
 ```
 
 ```
