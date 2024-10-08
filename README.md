@@ -8,6 +8,12 @@ Improving annotation accuracy, coverage, speed and depth of lipid profiles remai
 General Updates
 ---
 ```
+Last updated: Octoberr 08, 2024
+
+Fixed: (1) Resolved the issue of missing header group in some OxPE annotations.
+```
+
+```
 Last updated: September 09, 2024
 
 Updated: (1) New added Oxidized phosphatidylcholine (OxPC, O2xPC),
