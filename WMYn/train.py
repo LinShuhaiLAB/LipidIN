@@ -6,14 +6,24 @@ import torch.optim as optim
 import pandas as pd
 import random
 import numpy as np
+import torch.nn.functional as F
 
+
+class LearnableActivation(nn.Module):
+    def __init__(self):
+        super(LearnableActivation, self).__init__()
+        self.alpha = nn.Parameter(torch.tensor(1.0))  
+        self.beta = nn.Parameter(torch.tensor(0.0))  
+
+    def forward(self, x):
+        return self.alpha * (x * torch.sigmoid(x)) + self.beta 
 
 class KanLikeLayer(nn.Module):
-    def __init__(self, in_features, out_features, bias=True, base_activation=None):
+    def __init__(self, in_features, out_features, bias=True):
         super(KanLikeLayer, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
-        self.base_activation = base_activation
+        self.learnable_activation = LearnableActivation()
         self.weight = nn.Parameter(torch.Tensor(out_features, in_features))
         if bias:
             self.bias = nn.Parameter(torch.Tensor(out_features))
@@ -22,29 +32,24 @@ class KanLikeLayer(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        nn.init.kaiming_uniform_(self.weight, a=nn.init.calculate_gain('relu'))
+        nn.init.kaiming_uniform_(self.weight, a=nn.init.calculate_gain('sigmoid'))
         if self.bias is not None:
             fan_in, _ = nn.init._calculate_fan_in_and_fan_out(self.weight)
             bound = 1 / np.sqrt(fan_in)
             nn.init.uniform_(self.bias, -bound, bound)
 
     def forward(self, x):
-        if self.base_activation is not None:
-            return self.base_activation(nn.functional.linear(x, self.weight, self.bias))
-        else:
-            return nn.functional.linear(x, self.weight, self.bias)
-
+        linear_output = F.linear(x, self.weight, self.bias)
+        return self.learnable_activation(linear_output)
 
 class ScaledFeatureExtractor(nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim):
         super(ScaledFeatureExtractor, self).__init__()
-        self.fc1 = KanLikeLayer(input_dim, hidden_dim, base_activation=nn.SiLU())
-        self.fc2 = KanLikeLayer(hidden_dim, output_dim, base_activation=nn.SiLU())
-        self.relu = nn.ReLU()
+        self.fc1 = KanLikeLayer(input_dim, hidden_dim)
+        self.fc2 = KanLikeLayer(hidden_dim, output_dim)
 
     def forward(self, x):
         x = self.fc1(x)
-        x = self.relu(x)
         x = self.fc2(x)
         return x
 
@@ -54,7 +59,7 @@ class WMY(nn.Module):
         super(WMY, self).__init__()
         self.mlp = ScaledFeatureExtractor(input_dim, hidden_dim, hidden_dim)
         self.encoder = Encoder(hidden_dim, num_layers, num_heads, dropout)
-        self.output_layer = KanLikeLayer(hidden_dim, output_dim, base_activation=nn.SiLU())
+        self.output_layer = KanLikeLayer(hidden_dim, output_dim)
         self.mlp_output = ScaledFeatureExtractor(batch_size, hidden_dim, 1)
 
     def forward(self, x):
@@ -87,7 +92,7 @@ class EncoderLayer(nn.Module):
         self.self_attn = nn.MultiheadAttention(input_dim, num_heads, dropout=dropout)
         self.dropout1 = nn.Dropout(dropout)
         self.norm1 = nn.LayerNorm(input_dim)
-        self.fc = KanLikeLayer(input_dim, input_dim, base_activation=nn.SiLU())
+        self.fc = KanLikeLayer(input_dim, input_dim)
         self.relu = nn.ReLU()
         self.dropout2 = nn.Dropout(dropout)
         self.norm2 = nn.LayerNorm(input_dim)
@@ -109,10 +114,8 @@ class EncoderLayer(nn.Module):
 def load_data(csv_file):
     df = pd.read_csv(csv_file)
     labels = df.columns[1:].tolist()
-
     data = df.iloc[:, 1:].values
     data = data.T
-
     return labels, data
 
 
@@ -246,8 +249,7 @@ def batch_process(data_folder, project_folder):
         main(csv_file, target_file, weight_name, final_output_name)
 
 
-
 if __name__ == "__main__":
-    data_folder = " "
-    output_folder = ' '
+    data_folder = r" "  
+    output_folder = r" " 
     batch_process(data_folder, output_folder)
