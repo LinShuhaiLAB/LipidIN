@@ -110,11 +110,17 @@ void process_file(const std::string& input_file) {
       if (level1_3_curr > 0) {
         valid_level1_3 = 1;
         max_score1_level1_3 = std::max(max_score1_level1_3, current_record.score1);
+        if (max_score1_level1_3 == 0.5){
+          max_score1_level1_3 = 0.45;
+        }
         max_score2_level1_3 = std::max(max_score2_level1_3, current_record.score2);
       }
       if (level2_4_curr > 0) {
         valid_level2_4 = 1;
         max_score1_level2_4 = std::max(max_score1_level2_4, current_record.score1);
+        // if (max_score1_level2_4 == 0.5){
+        //   max_score1_level2_4 = 0.55;
+        // }
         max_score2_level2_4 = std::max(max_score2_level2_4, current_record.score2);
       }
       
@@ -122,6 +128,9 @@ void process_file(const std::string& input_file) {
     } else {
       // Check and write the previous record
       if (is_valid_record(valid_level1_3, valid_level2_4)) {
+        if (max_score1_level1_3 == 0.5){
+          max_score1_level1_3 = 0.45;
+        }
         prev_record.score1 = (max_score1_level1_3 + max_score1_level2_4) / 2.0;
         prev_record.score2 = (max_score2_level1_3 + max_score2_level2_4) / 2.0;
         
@@ -143,6 +152,9 @@ void process_file(const std::string& input_file) {
   
   // Process the last record
   if (is_valid_record(valid_level1_3, valid_level2_4)) {
+    if (max_score1_level1_3 == 0.5){
+      max_score1_level1_3 = 0.45;
+    }
     prev_record.score1 = (max_score1_level1_3 + max_score1_level2_4) / 2.0;
     prev_record.score2 = (max_score2_level1_3 + max_score2_level2_4) / 2.0;
     

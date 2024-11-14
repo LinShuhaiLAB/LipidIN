@@ -464,7 +464,8 @@ part2 <- function(FNIII){
     calMS2(da2[cm,]$Fomula)
   }))
   da <- da2[,-4]
-  da <- da[!duplicated(da[,c(2,3,5)]),]
+  da <- da %>% group_by(Peak.num,title) %>% top_n(1,score.match+score.ratio)
+  da <- da[!duplicated(da),]
   write.csv(da,paste(gsub('.rda','',FNIII),'_NPG_processed.csv',sep=''))
 }
 

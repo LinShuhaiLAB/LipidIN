@@ -425,6 +425,7 @@ all_search <- function(bp.point, other.point,target.function.tolerance) {
 }
 part2 <- function(FNIII){
   cat("\033[32m",paste('Match files ',FNIII,sep=''),"\n\033[0m")
+  # FNIII <- FN1[1]
   load(FNIII)
   sample_mz <- purrr::map(.x=neg.list, .f=function(x){
     return(x$PrecursorMZ)
@@ -462,9 +463,9 @@ part2 <- function(FNIII){
   da2$Tmz <- do.call(c,lapply(1:nrow(da2),function(cm){
     calMS2(da2[cm,]$Fomula)
   }))
-  da <- da2[which(da2$score.match>=0.5),]
-  da <- da[,-4]
-  da <- da[!duplicated(da[,c(2,3,5)]),]
+  da <- da2[,-4]
+  da <- da %>% group_by(Peak.num,title) %>% top_n(1,score.match+score.ratio)
+  da <- da[!duplicated(da),]
   write.csv(da,paste(gsub('.rda','',FNIII),'_NPG_processed.csv',sep=''))
 }
 

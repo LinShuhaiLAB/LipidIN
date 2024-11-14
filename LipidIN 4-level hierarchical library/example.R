@@ -1,8 +1,8 @@
-FN <- 'D:/bio_inf/LipidIN/LipidIN 4-level hierarchical library v1.0.4/demo pos'
-pt <- 'D:/bio_inf/LipidIN/LipidIN 4-level hierarchical library v1.0.4'
-MS2_filter <- 0.10             
-ppm1 <- 5                    
-ppm2 <- 10                      
+FN <- 'D:/bio_inf/1950 ST003514/LipidIN 40 ev/pos'
+pt <- 'D:/bio_inf/LipidIN/LipidIN 4-level hierarchical library v1.0.6'
+MS2_filter <- 0.05      
+ppm1 <- 10                    
+ppm2 <- 50                      
 ESI <- 'p' 
 # FN: Address of the *.mzML file to be tested.
 # pt: Support code (EQ.cpp, LCI.R, etc.) address.
