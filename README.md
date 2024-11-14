@@ -10,6 +10,14 @@ General Updates
 ```
 Last updated: Octoberr 08, 2024
 
+Fixed: (1) Resolved known issues.
+Updated: (1) New added 45 kinds of Lipids.
+```
+
+
+```
+Last updated: Octoberr 08, 2024
+
 Fixed: (1) Resolved the issue of missing header group in some OxPE annotations.
 ```
 
