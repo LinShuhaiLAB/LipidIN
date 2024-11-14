@@ -8,7 +8,8 @@ Improving annotation accuracy, coverage, speed and depth of lipid profiles remai
 General Updates
 ---
 LipidIN demo watch
-https://github-production-user-asset-6210df.s3.amazonaws.com/148458997/386160788-fd8f9a46-08b2-44fb-8afd-51befcc65f87.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20241114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241114T104854Z&X-Amz-Expires=300&X-Amz-Signature=4fee7de8e430a63f9ea18dddf9cf55af5a51b25ffba928f450ef49914a702826&X-Amz-SignedHeaders=host
+
+(https://github-production-user-asset-6210df.s3.amazonaws.com/148458997/386160788-fd8f9a46-08b2-44fb-8afd-51befcc65f87.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20241114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241114T104854Z&X-Amz-Expires=300&X-Amz-Signature=4fee7de8e430a63f9ea18dddf9cf55af5a51b25ffba928f450ef49914a702826&X-Amz-SignedHeaders=host)
 
 General Updates
 ---
