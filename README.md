@@ -13,7 +13,7 @@ LipidIN demo watch
 
 LipidIN(WMYn) demo watch
 
-[![Video Thumbnail2]()]([https://github-production-user-asset-6210df.s3.amazonaws.com/148458997/386160788-fd8f9a46-08b2-44fb-8afd-51befcc65f87.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20241114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241114T104854Z&X-Amz-Expires=300&X-Amz-Signature=4fee7de8e430a63f9ea18dddf9cf55af5a51b25ffba928f450ef49914a702826&X-Amz-SignedHeaders=host](https://github.com/user-attachments/assets/4b9c2441-cc65-49ac-a7a7-5f7d6e47381d)
+[![Video Thumbnail]()](https://github-production-user-asset-6210df.s3.amazonaws.com/148458997/386181277-4b9c2441-cc65-49ac-a7a7-5f7d6e47381d.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20241114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241114T115256Z&X-Amz-Expires=300&X-Amz-Signature=122f58bd74e5392ba351627badf5bf41b53cdde19c1dab82b38816e41456aa77&X-Amz-SignedHeaders=host)
 
 General Updates
 ---
