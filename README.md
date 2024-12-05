@@ -18,6 +18,12 @@ LipidIN(WMYn) demo watch
 General Updates
 ---
 ```
+Last updated: December 5, 2024
+
+Updated: (1) Uploaded a lightweight database to GitHub. (Note: When using the negative ion mode, please ensure to extract the neg_ALL.zip file beforehand.)
+```
+
+```
 Last updated: November 14, 2024
 
 Fixed: (1) Resolved known issues.
