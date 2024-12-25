@@ -8,6 +8,8 @@ import random
 import numpy as np
 import torch.nn.functional as F
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 class LearnableActivation(nn.Module):
     def __init__(self):
@@ -51,7 +53,7 @@ class ScaledFeatureExtractor(nn.Module):
     def forward(self, x):
         x = self.fc1(x)
         x = self.fc2(x)
-        return x
+        return F.relu(x)
 
 
 class WMY(nn.Module):
