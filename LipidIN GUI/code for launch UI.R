@@ -9,15 +9,23 @@ for (pkg in packages) {
   }
 }
 
+
 library(devtools)
 
 install.packages(
-  pkgs = '~/LipidIN-main/LipidIN GUI/LipidIN_2.0.0.1.tar.gz',
+  pkgs = 'D:/bio_inf/LipidIN-main/LipidIN GUI/LipidIN_2.0.0.1.tar.gz',
+  # Note that here you need to write the full address 
+  # of LipidIN_2.0.0.1.tar.gz, the above is only an example, 
+  # please modify the address according to the actual situation.
   lib = .libPaths()[length(.libPaths())],
   repos = NULL,
   dependencies = T
 )
 
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
 
+BiocManager::install("xcms")
+BiocManager::install("CAMERA")
 library(LipidIN)
 run_LipidIN()
