@@ -11,6 +11,8 @@ Reference
 
 [2] Kuhl C, Tautenhahn R, Boettcher C, Larson TR, Neumann S (2012). “CAMERA: an integrated strategy for compound spectra extraction and annotation of liquid chromatography/mass spectrometry data sets.” Analytical Chemistry, 84, 283–289. 
 
+[3] Kumler & Ingalls, "Tidy Data Neatly Resolves Mass-Spectrometry's Ragged Arrays", The R Journal, 2022.
+
 Demo Watch
 ---
 LipidIN demo watch
