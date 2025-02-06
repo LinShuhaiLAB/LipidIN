@@ -7,6 +7,7 @@ Improving annotation accuracy, coverage, speed and depth of lipid profiles remai
 
 Reference
 [1] Smith, C.A., Want, E.J., O'Maille, G., Abagyan,R., Siuzdak, G. (2006). “XCMS: Processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching and identification.” Analytical Chemistry, 78, 779–787.
+
 [2] Kuhl C, Tautenhahn R, Boettcher C, Larson TR, Neumann S (2012). “CAMERA: an integrated strategy for compound spectra extraction and annotation of liquid chromatography/mass spectrometry data sets.” Analytical Chemistry, 84, 283–289. 
 
 Demo Watch
