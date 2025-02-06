@@ -5,6 +5,10 @@ Introduction
 
 Improving annotation accuracy, coverage, speed and depth of lipid profiles remains a significant challenge in traditional spectral matching-based lipidomics. We introduce LipidIN, an advanced framework designed for comprehensive lipid annotation and reverse lipidomics. LipidIN features 168.6 million lipid fragmentation hierarchical library that encompass all potential chain compositions and carbon-carbon double bond locations. Developed expeditious querying module speeds up to around 70 billion times’ spectral querying in less than 1 second. Furthermore, we leverage three relative retention time rules to develop lipid categories intelligence model for reducing false positive annotations and predicting unannotated lipids with a 5.7% estimated false discovery rate coverage 8923 lipids cross various species. More importantly, LipidIN integrates a Wide-spectrum Modeling Yield network for regenerating lipid fingerprints to further improve coverage and accuracy with a 20% estimated recall boosting. The application of LipidIN in multiple tasks demonstrated reliability and potential for lipid annotation and biomarker discovery. 
 
+Reference
+[1] Smith, C.A., Want, E.J., O'Maille, G., Abagyan,R., Siuzdak, G. (2006). “XCMS: Processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching and identification.” Analytical Chemistry, 78, 779–787.
+[2] Kuhl C, Tautenhahn R, Boettcher C, Larson TR, Neumann S (2012). “CAMERA: an integrated strategy for compound spectra extraction and annotation of liquid chromatography/mass spectrometry data sets.” Analytical Chemistry, 84, 283–289. 
+
 Demo Watch
 ---
 LipidIN demo watch
