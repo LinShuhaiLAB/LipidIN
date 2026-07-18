@@ -4,7 +4,7 @@ LipidIN Spectral Libraries
 
 NOTE:
 Due to the large size of these libraries, the data are hosted at:
-    https://doi.org/10.1038/s41467-025-59683-5
+    https://zenodo.org/records/21421866
 
 ------------------------------------------------------------------------
 
