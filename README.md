@@ -1,255 +1,161 @@
-LipidIN
-===
-Introduction
+# LipidIN
+
+Lipid annotation, reverse lipidomics, and carbon–carbon double-bond localization — from raw MS data to a biological report.
+
+*Nature Communications* 2025, 16:4566 · Xu, H. *et al.* — [LipidIN: a comprehensive repository for flash platform-independent annotation and reverse lipidomics](https://doi.org/10.1038/s41467-025-59683-5)
+
+> 中文说明见文末 [**中文简介**](#中文简介)。
+
+> ### Maintenance status
+> **The Python implementation — `LipidIN × Agent` — is the actively developed version and will keep being updated.**
+> The earlier **R version is kept for reproducibility only and will no longer be updated.** New users should use the Python track below.
+
 ---
 
-Improving annotation accuracy, coverage, speed and depth of lipid profiles remains a significant challenge in traditional spectral matching-based lipidomics. We introduce LipidIN, an advanced framework designed for comprehensive lipid annotation and reverse lipidomics. LipidIN features 168.6 million lipid fragmentation hierarchical library that encompass all potential chain compositions and carbon-carbon double bond locations. Developed expeditious querying module speeds up to around 70 billion times’ spectral querying in less than 1 second. Furthermore, we leverage three relative retention time rules to develop lipid categories intelligence model for reducing false positive annotations and predicting unannotated lipids with a 5.7% estimated false discovery rate coverage 8923 lipids cross various species. More importantly, LipidIN integrates a Wide-spectrum Modeling Yield network for regenerating lipid fingerprints to further improve coverage and accuracy with a 20% estimated recall boosting. The application of LipidIN in multiple tasks demonstrated reliability and potential for lipid annotation and biomarker discovery. 
+## Figures (as reported in the paper)
 
-Reference
+| Metric | Value |
+|---|---|
+| Theoretical library size | 168.6 million fragmentation entries (all chain compositions + C=C double-bond positions) |
+| Query throughput | ~70 billion spectral comparisons in < 1 s |
+| Annotation false discovery rate | 5.7 % (estimated), across 8,923 lipids |
+| WMYn recall change | +20 % (estimated) |
+| Agent general library | 24,631,702 spectra; ~66 (pos) / ~95 (neg) subclasses; 91 / 108 subclass×adduct combinations |
+| Agent PB library | 2,289,913 spectra; 11 glycerophospholipid / lysophospholipid subclasses |
+| Minimum RAM | 16 GB |
+| Input formats | Thermo `.raw`, SCIEX `.wiff`, Bruker/Agilent `.d`, `.mzML` |
 
-[1] Smith, C.A., Want, E.J., O'Maille, G., Abagyan,R., Siuzdak, G. (2006). “XCMS: Processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching and identification.” Analytical Chemistry, 78, 779–787.
+## What it does (Python · LipidIN × Agent)
 
-[2] Kuhl C, Tautenhahn R, Boettcher C, Larson TR, Neumann S (2012). “CAMERA: an integrated strategy for compound spectra extraction and annotation of liquid chromatography/mass spectrometry data sets.” Analytical Chemistry, 84, 283–289. 
+The Python version runs the workflow as a web app driven from a chat box:
 
-[3] Kumler & Ingalls, "Tidy Data Neatly Resolves Mass-Spectrometry's Ragged Arrays", The R Journal, 2022.
+- **Annotation** — MS2 library search against the theoretical library (chain compositions + C=C double-bond positions).
+- **End-to-end analysis** — annotation → quantification → QC (CV / PCA / PLS-DA) → differential analysis → pathway enrichment → LLM biological conclusions → 4-axis verification → bilingual report.
+- **Double-bond localization** — Paternò–Büchi (PB) derivatization localizes C=C positions in fatty-acyl chains to omega notation (`n-9`, `n-6`, …), with position-level quantification and differential analysis.
+- **Parameters editable mid-run** — change any parameter and re-run only the affected step; structured commands run offline, natural-language requests use an optional LLM.
 
-Demo Watch
+## Repository layout
+
+```
+LipidIN-main/
+├─ LipidIN x Agent/                 # Python · actively developed
+│   ├─ code/                        #   general untargeted lipidomics   (agent_server.py, port 7860)
+│   │   └─ README_EN.pdf / README_ZH.pdf
+│   └─ code_for_PB/                 #   PB carbon–carbon double-bond localization (pb_agent_server.py, port 8790)
+│       └─ README_EN.pdf / README_ZH.pdf
+├─ LipidIN for R (20250601)/        # R framework — reproducibility only, no longer updated
+├─ README_LipidIN_for_R.md          # R-track module usage (archived)
+└─ README.md                        # this overview
+```
+
+## Quick start (Python)
+
+1. Install Python **3.11 (Windows x64)** and the packages listed in the sub-manual (`flask pandas numpy scipy scikit-learn matplotlib polars fisher_py …`).
+2. Download the spectral libraries from **[Zenodo → https://zenodo.org/records/21421866](https://zenodo.org/records/21421866)** (see below).
+3. Launch the web agent and open it in a browser:
+   - General lipidomics: `python agent_server.py` → http://127.0.0.1:7860
+   - PB double-bond localization: `python pb_agent_server.py --no-open --port 8790` → http://127.0.0.1:8790
+4. Point it at your data folder, type `run all` / `全流程`, and confirm.
+
+Each folder also has a one-shot `run.py` (edit the path lines at the top and run).
+
+**Manuals (self-contained PDF, with a worked demo):**
+- General — [English (PDF)](LipidIN%20x%20Agent/code/README_EN.pdf) · [中文 (PDF)](LipidIN%20x%20Agent/code/README_ZH.pdf)
+- PB double-bond — [English (PDF)](LipidIN%20x%20Agent/code_for_PB/README_EN.pdf) · [中文 (PDF)](LipidIN%20x%20Agent/code_for_PB/README_ZH.pdf)
+
+## Spectral libraries — where & what
+
+The libraries are too large to ship in this repository and are hosted on Zenodo.
+
+### For LipidIN × Agent (Python) → https://zenodo.org/records/21421866
+
+Three delivery forms of the same theoretical library:
+
+| Library | Format | Spectra | Coverage | Use |
+|---|---|---|---|---|
+| General (exclude PB) | Python `.pkl` (`pos_common.pkl`, `neg_common.pkl`) | 24,631,702 | ~66 pos / ~95 neg subclasses; 91 / 108 subclass×adduct combos | conventional LC-MS/MS lipidomics |
+| PB (only PB) | Python `.pkl` (`PB_PX_H.pkl`, `common_PX_CH3COO.pkl` + MS1 index) | 2,289,913 | 11 glycerophospholipid / lysophospholipid subclasses | PB double-bond localization |
+| R-native | `.rda` (`pos_ALL.rda`, `neg_ALL.rda`) | (= general) | same as general | R pipeline |
+
+Subclasses covered by the general library: glycerophospholipids (PC/PE/PS/PG/PI/PA + ether & lyso forms), glycerolipids (TG/DG/MG, OxTG), sphingolipids (Cer/SM/HexCer/gangliosides), sterol esters & bile-acid derivatives, fatty acids & oxidized lipids, and acylated glycolipids (MGDG/DGDG/SQDG). Requires ≥ 16 GB RAM.
+
+(R libraries: the original hierarchical / MS-DIAL libraries are at https://zenodo.org/records/13350719; additional oxidized-lipid spectra at https://zenodo.org/records/13735639.)
+
+## Requirements (summary)
+
+- **OS:** Windows. **RAM:** ≥ 16 GB for the `.pkl` libraries.
+- **Python track:** Python 3.11 (x64); Thermo `.raw` via `fisher_py` (.NET); `.wiff` / `.d` via ProteoWizard **msconvert**.
+
+## LipidIN for R (legacy)
+
+The R framework (EQ / LCI / WMYn modules, a GUI, and demos) is in [`LipidIN for R (20250601)/`](LipidIN%20for%20R%20%2820250601%29/) with archived instructions in [README_LipidIN_for_R.md](README_LipidIN_for_R.md). It is kept for reproducing published results and will not be updated; use the Python track for new work.
+
+## Citation & license
+
+Xu, H. *et al.* LipidIN: a comprehensive repository for flash platform-independent annotation and reverse lipidomics. *Nat. Commun.* 16, 4566 (2025). https://doi.org/10.1038/s41467-025-59683-5
+
+See [LICENSE](LICENSE).
+
 ---
-LipidIN demo watch
 
-[![Video Thumbnail]()](https://github-production-user-asset-6210df.s3.amazonaws.com/148458997/386160788-fd8f9a46-08b2-44fb-8afd-51befcc65f87.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20241114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241114T104854Z&X-Amz-Expires=300&X-Amz-Signature=4fee7de8e430a63f9ea18dddf9cf55af5a51b25ffba928f450ef49914a702826&X-Amz-SignedHeaders=host)
+## 中文简介
 
-LipidIN(WMYn) demo watch
+LipidIN：脂质注释、逆向脂质组学与碳碳双键定位——从原始质谱数据到生物学报告。
 
-[![Video Thumbnail]()](https://github-production-user-asset-6210df.s3.amazonaws.com/148458997/386181277-4b9c2441-cc65-49ac-a7a7-5f7d6e47381d.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20241114%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241114T115256Z&X-Amz-Expires=300&X-Amz-Signature=122f58bd74e5392ba351627badf5bf41b53cdde19c1dab82b38816e41456aa77&X-Amz-SignedHeaders=host)
+> ### 维护状态
+> **Python 版实现——`LipidIN × Agent`——是当前持续开发的版本，后续会继续更新。**
+> 早期的 **R 版仅作复现之用，后续不再更新。** 新用户请使用下面的 Python 版。
 
-General Updates
----
-```
-Last updated: December 5, 2024
+### 指标（引自论文）
 
-Updated: (1) Uploaded a lightweight LIPID hierarchical library to GitHub.
-(Note: When using the negative ion mode, please ensure to extract the neg_ALL.zip file beforehand.)
-```
+| 指标 | 数值 |
+|---|---|
+| 理论库规模 | 1.686 亿条碎裂谱（覆盖所有链组成 + C=C 双键位置） |
+| 检索吞吐 | 1 秒内约 700 亿次谱比对 |
+| 注释假发现率 FDR | 5.7 %（估计），覆盖 8,923 种脂质 |
+| WMYn 召回变化 | +20 %（估计） |
+| Agent 常规库 | 24,631,702 条；约 66（正）/95（负）个亚类；91/108 种「亚类×加合」组合 |
+| Agent PB 库 | 2,289,913 条；11 种甘油磷脂/溶血磷脂亚类 |
+| 最低内存 | 16 GB |
+| 输入格式 | Thermo `.raw`、SCIEX `.wiff`、Bruker/Agilent `.d`、`.mzML` |
 
-```
-Last updated: November 14, 2024
+### 它能做什么（Python · LipidIN × Agent）
 
-Fixed: (1) Resolved known issues.
-Updated: (1) New added 45 kinds of Lipids.
-```
+Python 版把流程做成对话框驱动的网页应用：
 
+- **注释**：对理论库（链组成 + C=C 双键位置）做 MS2 搜库。
+- **一站式分析**：注释 → 定量 → 质控（CV/PCA/PLS-DA）→ 差异分析 → 通路富集 → 大模型生物学结论 → 四维验证 → 中英双语报告。
+- **双键定位**：通过 Paternò–Büchi（PB）衍生化，把脂肪酰链上的 C=C 定位到 omega 位置（`n-9`、`n-6`……），并做位置级定量与差异分析。
+- **运行中可改参数**：改任意参数后只重跑受影响的步骤；结构化命令离线可用，自然语言请求可接入可选的大模型。
 
-```
-Last updated: October 08, 2024
+### 如何快速上手（Python）
 
-Fixed: (1) Resolved the issue of missing header group in some OxPE annotations.
-```
+1. 安装 Python **3.11（Windows x64）** 及子手册列出的依赖包。
+2. 从 **[Zenodo → https://zenodo.org/records/21421866](https://zenodo.org/records/21421866)** 下载谱图库（见下）。
+3. 启动网页助手并在浏览器打开：
+   - 常规脂质组学：`python agent_server.py` → http://127.0.0.1:7860
+   - PB 双键定位：`python pb_agent_server.py --no-open --port 8790` → http://127.0.0.1:8790
+4. 把它指向你的数据目录，输入 `全流程` 并确认即可。（各目录也有一键脚本 `run.py`。）
 
-```
-Last updated: September 09, 2024
+手册（自包含 PDF，含 demo 演示）：
+- 常规：[中文 PDF](LipidIN%20x%20Agent/code/README_ZH.pdf) · [英文 PDF](LipidIN%20x%20Agent/code/README_EN.pdf)
+- PB 双键：[中文 PDF](LipidIN%20x%20Agent/code_for_PB/README_ZH.pdf) · [英文 PDF](LipidIN%20x%20Agent/code_for_PB/README_EN.pdf)
 
-Updated: (1) New added Oxidized phosphatidylcholine (OxPC, O2xPC),
-                       Oxidized phosphatidylglycerol (OxPG, O2xPG),
-                       Oxidized phosphatidylinositol (OxPI, O2xPI),
-                       Oxidized phosphatidylserine (OxPS, O2xPS) spectra (https://zenodo.org/records/13735639).
-```
+### 谱图库在哪里、包含什么
 
-```
-Last updated: September 03, 2024
+谱库体积过大，不随仓库分发，托管在 Zenodo：
 
-Fixed: (1) Update the LCI module to resolve the issue of file accessibility in a multitasking environment;
-       (2) Address and rectify errors related to the usage of pos_ALL.rda
-           ([https://zenodo.org/records/13645234](https://zenodo.org/records/13645234)).
-```
+- **LipidIN × Agent（Python）用库 → https://zenodo.org/records/21421866**，同一套理论库的三种形态：
+  - 常规库（`pos_common.pkl`+`neg_common.pkl`）：24,631,702 条，约 66（正）/95（负）个亚类，91/108 种「亚类×加合」组合；
+  - PB 库（`PB_PX_H.pkl`+`common_PX_CH3COO.pkl`+MS1 索引）：2,289,913 条，11 种甘油磷脂/溶血磷脂亚类；
+  - R 原生（`pos_ALL.rda`、`neg_ALL.rda`）：与常规库同内容。
+  - 常规库覆盖：甘油磷脂（PC/PE/PS/PG/PI/PA + 醚型与溶血型）、甘油酯（TG/DG/MG、OxTG）、鞘脂（Cer/SM/HexCer/神经节苷脂）、固醇酯与胆汁酸衍生物、脂肪酸及氧化脂、酰基化糖脂（MGDG/DGDG/SQDG）。需 ≥ 16 GB 内存。
+- （R 库）原始层次库 / MS-DIAL 库见 https://zenodo.org/records/13350719，氧化脂质补充谱见 https://zenodo.org/records/13735639。
 
-```
-Last updated: September 01, 2024
+### LipidIN for R（旧版）
 
-Updated: pos_ALL.rda ([10.5281/zenodo.13624125](https://zenodo.org/records/13624125))
-Fixed: (1) New added Osidizid Trilisered (OxTG) spectra.
-```
-```
-Last updated: August 31, 2024
+原始 R 框架（EQ / LCI / WMYn 模块、GUI 与 demo）保留在 [`LipidIN for R (20250601)/`](LipidIN%20for%20R%20%2820250601%29/)，说明见 [README_LipidIN_for_R.md](README_LipidIN_for_R.md)。它用于复现已发表结果，后续不再更新——新项目请使用 Python 版。
 
-Updated: p1.R; example.R
-Fixed: (1) Resolved the prolonged processing time issue in the converting *.mzML format to *.rda format.
-```
+### 引用
 
-```
-Last updated: August 30, 2024
-
-Added: EQ_support.cpp file and new demos.
-Updated: LCI.R; p2.R; p2CH3COO.R; p2COOH.R; example.R
-Fixed: (1) Resolved the prolonged processing time issue in the EQ module;
-       (2) Fixed the accidental file deletion problem in the LCI module when running multiple files simultaneously.
-```
-
-
-Features
----
-        
-`Mass Spectrometry Peak Processing Module:`Utilizes existing R packages to process mass spectrometry data in mzML format.
-        
-`Expeditious querying (EQ) Module:`Performs secondary matching with theoretical or real mass spectrometry libraries and normalizes the matching results.
-
-`The Lipid Categories Intelligence (LCI) Module:`Based on the relative position of primary information, it conducts heuristic searches using secondary matching scores as prior information to re-evaluate high-score matches.
-
-`Reverse Lipid Fingerprint Spectrogram Module:`WMYn predict  lipid fingerprint spectrogram using the model  we designed inspired by KAN and Muit-head attention.
-
-System Architecture
----
-The system  main development languages being R，python and C++. While R ,python handles backend processes and C++ accelerates the program. The software employs greedy secondary matching algorithms, heuristic search algorithms, and prior information-based spectrum enhancement algorithms for mass spectrometry analysis, outputting the identification results in CSV format.Using the model to generate reverse lipid fingerprint spectrograms, independent of sample matrices, instruments.
-
-Modules Description and Usage Instructions (LipidIN 4-level hierarchical library)
----
-We provide the demo which named "demo neg CH3COO" under LipidIN/LipidIN 4-level hierarchical library, due to github file size limitations, you can find the demos as well as the hierarchical library files "neg_ALL.rda" and "pos_ALL.rda" in the webpage Zenodo (https://zenodo.org/records/13350719).
-
-This task involves searching a 4-level hierarchical library, which is efficient in terms of querying. However, the data format conversion process for the LCI module takes approximately 2 minutes.
-
-To start, locate the file "example.R" within the "LipidIN/LipidIN 4-level hierarchical library" directory. Open this file and modify the relevant parameters as needed. Once you've made the necessary changes to the "example.R" file, select the entire code within the file. Then, click the "Run" button to execute the code.
-```
-##### Parameter Input #####
-FN <- 'I:/LipidIN 4-level hierarchical library/demo neg CH3COO'
-pt <- 'I:/LipidIN 4-level hierarchical library'
-MS2_filter <- 0.10             
-ppm1 <- 5                    
-ppm2 <- 10                      
-ESI <- 'n2' 
-# FN: Address of the *.mzML file to be tested.
-# pt: Support code (EQ.cpp, LCI.R, etc.) address.
-# filename: Location of .mzML file, for example '.../demo pos/QC_POS1.mzML'.
-# ESI: 'p' for positive ionization mode，
-#      ‘n1’ for negative ionization mode [M+COOH]-，
-#      'n2' for negative ionization mode [M+CH3COO]-.
-# MS2_filter: a value of 0-1, MS2 fragments with intensity lower than the MS2_filter*max intensity will be deleted
-```
-
-Modules Description and Usage Instructions (LipidIN MS-DIAL published library)
----
-We provide the demo which named "demo of LipidIN" under LipidIN/LipidIN MS-DIAL published library, due to github file size limitations, you can find the demos as well as the file format converted MS-DIAL published library files "MS1_MS2_library.rda" in the webpage Zenodo (https://zenodo.org/records/13350719).
-
-```
-##### data preprocessing Using 'RaMS' package #####
-source(paste(getwd(),'/preprocessing_RaMS.r',sep=''))
-env <- new.env()
-preprocessing_RaMS(filename,ESI,MS2_filter)
-# filename: Location of .mzML file, for example '.../demo pos/QC_POS1.mzML'.
-# ESI: 'p' for positive ionization mode，
-#      ‘n1’ for negative ionization mode [M+COOH]-，
-#      'n2' for negative ionization mode [M+CH3COO]-.
-# MS2_filter: a value of 0-1, MS2 fragments with intensity lower than the MS2_filter*max intensity will be deleted
-
-
-##### without multithread data preprocessing Using 'RaMS' package #####
-source(paste(getwd(),'/preprocessing_RaMS_nomultithread.r',sep=''))
-env <- new.env()
-preprocessing_RaMS_nomultithread(filename,ESI,MS2_filter)
-# filename: Location of .mzML file, for example '.../demo pos/QC_POS1.mzML'.
-# ESI: 'p' for positive ionization mode，
-#      ‘n1’ for negative ionization mode [M+COOH]-，
-#      'n2' for negative ionization mode [M+CH3COO]-.
-# MS2_filter: a value of 0-1, MS2 fragments with intensity lower than the MS2_filter*max intensity will be deleted
-```
-
-`Expeditious querying module (EQ) Module:`Matches mass spectrometry peaks with standard libraries using primary and secondary information.
-
-```
-##### EQ module annotation #####
-load(paste(getwd(),'/MS1_MS2_library.rda',sep=''))
-source(paste(getwd(),'/EQ.r',sep=''))
-EQ(filename,ppm1,ppm2,ESI)
-# filename: Location of .rda file output by data preprocessing, for example '.../demo pos/QC_POS1.rda'.
-# ppm1: MS1 m/z tolerance at parts per million (ppm)
-# ppm2: MS2 m/z tolerance at parts per million (ppm)
-# ESI: 'p' for positive ionization mode，
-#      ‘n1’ for negative ionization mode [M+COOH]-，
-#      'n2' for negative ionization mode [M+CH3COO]-.
-```
-
-`The Lipid Categories Intelligence (LCI) Module:`Reassesses high-confidence matches based on primary information relationships.
-
-```
-##### LCI FDR removel #####
-source(paste(getwd(),'/LCI.r',sep=''))
-env <- new.env()
-LCI(filename)
-# filename: Location of .rda file output by data preprocessing, for example '.../demo pos/QC_POS1.rda'.
-
-
-##### without multithread LCI FDR removel #####
-source(paste(getwd(),'/LCI_nomultithread.r',sep=''))
-env <- new.env()
-LCI_nomultithread(filename)
-# filename: Location of .rda file output by data preprocessing, for example '.../demo pos/QC_POS1.rda'.
-```
-
-`Reverse Lipid Fingerprint Spectrogram Module:`WMYn generates the reverse lipid fingerprint spectrograms.
-
-We provide pre-trained weights. If you need to use them, please download the pre-trained weights and use `predict.py`.
-
-```
-if __name__ == "__main__":
-    data_path =  " " 
-    project_folder = Path(" ")
-    mode = " "  # "neg" or "pos"
-# data_path is your input data path.
-# project_folder is pre-trained weights path.
-```
-
-If weights are not available, and for your convenience, we recommend using `train.py`.
-
-```
-if __name__ == "__main__":
-    data_folder = " "
-    output_folder = ' '
-    batch_process(data_folder, output_folder)
-
-# data_folder is your input data path.
-# output_folder is your output data path.
-# The input data include a matrix and a vector for training at least.For example AAA.csv(matrix) and AAA_GT.csv(vector).
-# If you need batch processing, please name the corresponding files in the following format, for example, `aaa.csv` with `aaa_GT.csv` ; `bbb.csv` with `bbb_GT.csv`.
-# We provide the demo directory, meanwhile, You can use more data. 
-```
-Requirements
----
-All benchmark tests were performed on a personal computer with 13th Gen Intel® Core™ i7-13700F × 16- Core Processor, 64 GB memory, and installed with Windows11 operation system , R-4.2.3 and Python v.3.9 including packages XCMS (v 4.2.2), RaMS (v 1.4.0), parallel (v 3.6.2), doParallel (version 1.0.17), Rcpp (1.0.11), tidyverse (v 1.3.0), WGCNA (v 1.7.0-3), statTarget (v 1.34.0), lightgbm (v 4.5.0), pandas (v 2.0.3.), numpy( v 1.23.5), torch (1.13.1+cu116).
-MS entropy and Flash entropy download from Github at https://github.com/YuanyueLi/SpectralEntropy, and https://github.com/YuanyueLi/FlashEntropySearch.
-LipidMatch was downloaded from https://github.com/GarrettLab-UF/LipidMatch. 
-In all testing, we used MS-DIAL version v4.9.221218 and LipidSearch V4.2. All equations for LipidIN for MS/MS notation and fingerprint regenerating are given in the Methods. Code for clinical cohort analysis  can be access at https://github.com/LinShuhaiLAB/LipidIN/clinical cohort analysis.
-
-- Operating System: Windows
-- Compilation Environment
-```
-
-Packages need in R code.
-> library(this.path)
-> library(RaMS)
-> library(parallel)
-> library(doParallel)
-> library(Rcpp)
-> library(tidyverse)
-
-Requirements need in python code."
-  import os
-  import glob
-  import torch
-  import torch.nn as nn
-  import torch.optim as optim
-  import pandas as pd
-  import random
-  import numpy as np
-```
-- Hardware Requirements: (LipidIN 4-level hierarchical library require RAM >= 16GB, LipidIN MS-DIAL published library has no special requires.)
-- Estimated Time for Installing Required Packages
-```
-  The R code for installing packages takes approximately 10 minutes, depending on individual network conditions.
-  The python code for installing requirements takes approximately 10 minutes, depending on individual network conditions.
-```
-- Estimated Time for Each Module
-```
-  In the R code：
-      Batch realization of converting mzML to rda cost time approximately 10 s
-      EQ module cost time approximately 12s (<0.1s for querying and 11 s for data preprocssing of LCI)
-      LCI module cost time approximately 1.62 mins
-```
+Xu, H. *et al.* LipidIN: a comprehensive repository for flash platform-independent annotation and reverse lipidomics. *Nat. Commun.* 16, 4566 (2025). https://doi.org/10.1038/s41467-025-59683-5
