@@ -1,0 +1,80 @@
+name,mz,ionmode
+AHexBRS,255.233,neg
+ASM,184.073,pos
+BASulfate,96.96,neg
+BileAcid,74.024,neg
+Campesterol,147.115 | 243.213,pos
+CerP,78.959 | 96.969,neg
+Cholesterol,369.352,pos
+CL,152.996,neg
+CoQ10,197.081,pos
+DEGSE,377.32,pos
+DGCC,104.107 | 132.102,pos
+DGTS,144.102 | 236.149,pos
+DHSph,81.07,pos
+Dihydrocholesterol,97.065,pos
+DLCL,152.996,neg
+Ergosterol,135.117 | 379.336,pos
+GD1a,657.235,pos
+GD1b,366.140 ,pos
+GD1b,87.009 | 290.088 | 581.184,neg
+GM1,366.14,pos
+GM1,87.009 | 290.088,neg
+GM3,87.009 | 290.088,neg
+GPNAE,78.959 | 170.998 | 171.006,neg
+GT1b,366.140 | 657.235,pos
+GT1b,87.009 | 290.088 | 581.184,neg
+GQ1b,366.139 | 657.235,pos
+HexCer-HDS,179.056,neg
+LDGCC,104.107 | 132.102,pos
+LDGTS,144.102 | 236.149,pos
+LNAPE,152.996,neg
+LNAPS,152.996,pos
+LPA,78.959 | 152.996,neg
+LPC,104.107 | 184.074,pos
+LPC,224.069,neg
+LPC-O,104.107 | 125.001 | 184.074,pos
+LPC-O,78.959 | 168.043,neg
+LPE-O,140.012 | 196.038,neg
+LPG,78.959 | 152.996,neg
+LPG-O,78.959 | 152.996,neg
+LPI,241.012 | 315.049,neg
+LPS,78.959 | 152.996,neg
+MLCL,152.996,neg
+NAGly,76.039,pos
+NAGly,74.025,neg
+NAGlySer,106.050 | 145.062,pos
+NAOrn,70.065 | 115.087,pos
+NGcGM3,87.009 | 306.083,neg
+OxPC,224.069,neg
+OxPE,196.038,neg
+OxPI,241.012 | 297.03,neg
+PA,152.996,neg
+PC,86.094 | 184.073,pos
+PC,224.069,neg
+PC-O,224.069,neg
+PE,196.038,neg
+PE-Cer,78.959 | 140.012,neg
+PE-Cer+O,78.959 | 140.012,neg
+PG,152.996,neg
+PG-O,152.996,neg
+PI,241.013,pos
+PI-Cer+O,78.959 | 241.012,neg
+PI-O,241.012,neg
+PMeOH,110.985,neg
+SHexCer,96.96,neg
+SHexCer+O,96.96,neg
+SL,124.006,pos
+SL,79.957,neg
+SL+O,124.006,pos
+SL+O,79.957,neg
+SM,184.073,pos
+SM,78.959 | 168.043,neg
+SM+O,184.073,pos
+SM+O,168.043,neg
+SMGDG-O,96.96 | 241.002,neg
+Sph,79.054,pos
+SSulfate,96.96,neg
+STSE,395.367,pos
+VAE,119.086 | 269.226,pos
+Vitamin E,163.075,neg
