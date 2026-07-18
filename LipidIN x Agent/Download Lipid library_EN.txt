@@ -1,0 +1,85 @@
+========================================================================
+LipidIN Spectral Libraries
+========================================================================
+
+NOTE:
+Due to the large size of these libraries, the data are hosted at:
+    https://doi.org/10.1038/s41467-025-59683-5
+
+------------------------------------------------------------------------
+
+This directory contains three theoretical lipid MS/MS spectral libraries
+- three delivery forms of the same LipidIN theoretical library: a general
+library (Python), a PB-reaction library (Python), and an R-native version.
+
+========================================================================
+OVERVIEW
+========================================================================
+
++----------------------------------------------+---------+-------------+
+| Library                                      | Format  | Spectra     |
++----------------------------------------------+---------+-------------+
+| py (exclude PB reaction) - general           | .pkl    | 24,631,702  |
+| py (only PB reaction) - PB localization      | .pkl    |  2,289,913  |
+| R (rda) - R-native general                   | .rda    | (= general) |
++----------------------------------------------+---------+-------------+
+
+========================================================================
+1. LipidIN MS2 library for py (exclude PB reaction) - GENERAL
+========================================================================
+Broadest coverage. Requires >= 16 GB RAM.
+Positive / negative modes cover 91 / 108 subclass x adduct combinations.
+
+  File            Spectra       Subclasses  Adducts
+  -------------   -----------   ----------  -----------------------------------
+  pos_common.pkl  10,367,678    ~66         [M+H]+ [M+NH4]+ [M+Na]+
+                                            [M+2NH4]2+ [M]+
+  neg_common.pkl  14,264,024    ~95         [M-H]- [M+HCOO]- [M-2H]2-
+
+Lipid coverage:
+  - Glycerophospholipids (PC PE PS PG PI PA, incl. O-/P- ether & lyso forms)
+  - Glycerolipids (TG DG MG OxTG)
+  - Sphingolipids (Cer SM HexCer Hex2-3Cer, GM/GD/GT gangliosides)
+  - Sterol esters & bile-acid derivatives (CE ST -ST)
+  - Fatty acids & oxidized lipids (FA FAHFA OxFA OxPC)
+  - Acylated glycolipids (MGDG DGDG SQDG)
+
+Use: spectral matching & structural annotation for conventional
+(non-derivatized) LC-MS/MS lipidomics.
+
+========================================================================
+2. LipidIN MS2 library for py (only PB reaction) - PB LOCALIZATION
+========================================================================
+Focused on 11 glycerophospholipid / lysophospholipid subclasses:
+PC PC-O PE PE-O LPC LPC-O LPE LPE-O LPI PI/PI-O PG.
+
+  File                        Spectra      Subcl  Adducts               Role
+  --------------------------  ----------   -----  --------------------  --------------------------
+  PB_PX_H.pkl                 1,610,048    11     [M+H]+                PB-product diagnostic ions
+  common_PX_CH3COO.pkl          679,865    11     [M-H]- [M+CH3COO]-    Underivatized precursor
+  common_PX_CH3COO.pkl.        (index)     -      -                     MS1 lookup accelerator
+    ms1index.pkl
+
+Workflow:
+  common_PX_CH3COO (negative) identifies the lipid species; PB_PX_H
+  (positive) provides PB diagnostic-ion pairs to reconstruct double-bond
+  positions.
+
+Use: carbon-carbon double-bond localization for Paterno-Buchi (PB)
+derivatization experiments.
+
+========================================================================
+3. LipidIN MS2 library for R - R-NATIVE GENERAL
+========================================================================
+Files: pos_ALL.rda, neg_ALL.rda
+The R-native format of the same theoretical general library as Library 1,
+loaded directly by LipidIN's R pipeline (the Python .pkl was converted
+from it). Coverage and purpose identical to Library 1; only the file
+format and runtime environment differ.
+
+========================================================================
+Spectra counts are read directly from the pickle files (row count =
+number of spectra); the 91/108 combination figures follow the original
+publication; subclass counts (~66 pos / ~95 neg) are parsed from the
+species labels and are approximate.
+========================================================================
